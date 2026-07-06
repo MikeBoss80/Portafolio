@@ -1,7 +1,7 @@
 // ==============================================
 // GLOBAL VARIABLES AND UTILITIES
 // ==============================================
-class MainApp  {
+class MainApp {
     constructor() {
         this.init();
     }
@@ -14,6 +14,10 @@ class MainApp  {
             this.initializeApp();
         }
     }
+
+    // ==============================================
+    // INITIALIZE APPLICATION
+    // ==============================================
     initializeApp() {
         this.setupLoader();
         this.setupNavigation();
@@ -29,7 +33,7 @@ class MainApp  {
         this.setupParticles();
         this.setupExperienceAnimations();
         this.setupLanguageBars();
-        this.setupSVG3DEffects();  // ← AGREGAR
+        this.setupSVG3DEffects();
         
         if (typeof AOS !== 'undefined') {
             AOS.init({
@@ -39,9 +43,9 @@ class MainApp  {
                 offset: 100
             });
         }
+        
+        console.log('✅ Portafolio inicializado correctamente');
     }
-
-
 
     // ==============================================
     // SVG 3D SCROLL EFFECTS CON ARCHIVO EXTERNO
@@ -51,16 +55,16 @@ class MainApp  {
         const svgObject = document.getElementById('backgroundSVG');
         
         if (!svgWrapper || !svgObject) {
-            console.warn('SVG Background no encontrado');
+            console.warn('⚠️ SVG Background no encontrado');
             return;
         }
-    
+
         // Esperar a que el SVG se cargue completamente
         svgObject.addEventListener('load', () => {
-            console.log('SVG cargado correctamente');
+            console.log('✅ SVG cargado correctamente');
             this.initSVGEffects(svgWrapper, svgObject);
         });
-    
+
         // Fallback: si no carga en 3 segundos
         setTimeout(() => {
             if (svgObject.contentDocument) {
@@ -68,64 +72,69 @@ class MainApp  {
             }
         }, 3000);
     }
-    
+
     // ==============================================
-    // INICIALIZAR EFECTOS DEL SVG
+    // INICIALIZAR EFECTOS DEL SVG - OPTIMIZADO
     // ==============================================
     initSVGEffects(wrapper, object) {
         const svg = object.contentDocument?.querySelector('svg');
         
         if (!svg) {
-            console.warn('No se pudo acceder al SVG interno');
+            console.warn('⚠️ No se pudo acceder al SVG interno');
             return;
         }
-    
+
         // Variables para efectos
         let scrollProgress = 0;
-        let lastScrollY = 0;
-    
-        // ===== 1. PARALLAX EN EL SCROLL =====
-        window.addEventListener('scroll', () => {
-            const scrollY = window.pageYOffset;
-            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-            
-            // Progreso del scroll (0 a 1)
-            scrollProgress = Math.min(1, scrollY / (docHeight * 0.8));
-            
+        let rafId = null;
+        let targetOpacity = 0.9;
+        let currentOpacity = 0.9;
+        let targetTranslate = 0;
+        let currentTranslate = 0;
+
+        // ===== 1. PARALLAX EN EL SCROLL (OPTIMIZADO CON RAF) =====
+        const updateSVG = () => {
             // --- Efecto 1: Movimiento vertical (parallax) ---
-            const translateY = scrollProgress * 120;
-            const scale = 1 + scrollProgress * 0.03;
-            const rotate = scrollProgress * 2;
+            const translateY = scrollProgress * 80;
+            const scale = 1 + scrollProgress * 0.02;
+            const rotate = scrollProgress * 1.5;
+            
+            // Suavizado de opacidad
+            currentOpacity += (targetOpacity - currentOpacity) * 0.05;
+            currentTranslate += (targetTranslate - currentTranslate) * 0.05;
             
             svg.style.transform = `
-                translateY(${translateY * 0.3}px) 
+                translateY(${currentTranslate}px) 
                 scale(${scale}) 
                 rotate(${rotate}deg)
             `;
             
-            // --- Efecto 2: Opacidad dinámica ---
-            const opacity = Math.max(0.3, 1 - scrollProgress * 0.5);
-            svg.style.opacity = opacity;
+            // Opacidad dinámica (aparece gradualmente)
+            svg.style.opacity = Math.min(0.9, currentOpacity);
             
-            // --- Efecto 3: Desenfoque progresivo ---
-            const blurAmount = scrollProgress * 2;
-            svg.style.filter = `blur(${blurAmount}px)`;
+            // Desenfoque progresivo (solo cuando hay scroll avanzado)
+            if (scrollProgress > 0.3) {
+                const blurAmount = (scrollProgress - 0.3) * 3;
+                svg.style.filter = `blur(${Math.min(blurAmount, 3)}px)`;
+            } else {
+                svg.style.filter = 'blur(0px)';
+            }
             
-            // --- Efecto 4: Scroll de las capas internas ---
+            // --- Efecto: Scroll de capas internas (optimizado) ---
             const layers = svg.querySelectorAll('g[filter], g:not([filter])');
             layers.forEach((layer, index) => {
                 const speed = 0.1 + (index % 3) * 0.05;
-                const layerOffset = scrollProgress * 50 * speed;
+                const layerOffset = scrollProgress * 40 * speed;
                 layer.style.transform = `translateY(${layerOffset}px)`;
             });
             
-            // --- Efecto 5: Brillo de los nodos ---
+            // --- Efecto: Brillo de nodos (optimizado) ---
             const nodes = svg.querySelectorAll('#networkNode, #networkNodeMagenta, .networkNode');
             nodes.forEach((node, i) => {
                 const delay = i * 0.02;
                 const progress = Math.max(0, Math.min(1, (scrollProgress - delay) / (1 - delay)));
-                const glowSize = 12 + progress * 20;
-                const glowOpacity = 0.3 + progress * 0.5;
+                const glowSize = 12 + progress * 15;
+                const glowOpacity = 0.3 + progress * 0.4;
                 
                 const circles = node.querySelectorAll('circle');
                 circles.forEach(circle => {
@@ -136,38 +145,86 @@ class MainApp  {
                 });
             });
             
-            // --- Efecto 6: Velocidad de pulsos ---
+            // --- Efecto: Velocidad de pulsos (optimizado) ---
             const pulses = svg.querySelectorAll('animateMotion');
             pulses.forEach((pulse) => {
-                const speed = 4 + scrollProgress * 10;
+                const speed = 4 + scrollProgress * 8;
                 const currentDur = parseFloat(pulse.getAttribute('dur'));
                 if (currentDur > 2) {
                     pulse.setAttribute('dur', Math.max(2, speed));
                 }
             });
-    
-            lastScrollY = scrollY;
+
+            rafId = requestAnimationFrame(updateSVG);
+        };
+
+        // ===== 2. SCROLL LISTENER (SOLO ACTUALIZA VARIABLES) =====
+        window.addEventListener('scroll', () => {
+            const scrollY = window.pageYOffset;
+            const windowHeight = window.innerHeight;
+            const docHeight = document.documentElement.scrollHeight - windowHeight;
+            
+            // Obtener offset de la sección About
+            const aboutSection = document.querySelector('#about');
+            if (!aboutSection) return;
+            
+            const aboutOffset = aboutSection.offsetTop - windowHeight * 0.3;
+            
+            // Progreso DESDE la segunda sección
+            const rawProgress = (scrollY - aboutOffset) / (docHeight - aboutOffset);
+            scrollProgress = Math.max(0, Math.min(1, rawProgress));
+            
+            // Actualizar valores objetivo para el suavizado
+            targetOpacity = 0.1 + scrollProgress * 0.8;
+            targetTranslate = scrollProgress * 80;
             
         }, { passive: true });
-    
-        // ===== 2. EFECTO CON EL MOUSE =====
+
+        // ===== 3. INICIAR ANIMACIÓN CON RAF =====
+        updateSVG();
+
+        // ===== 4. EFECTO CON EL MOUSE (OPTIMIZADO) =====
+        let mouseX = 0;
+        let mouseY = 0;
+        let currentMouseX = 0;
+        let currentMouseY = 0;
+
         document.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth - 0.5) * 2;
-            const y = (e.clientY / window.innerHeight - 0.5) * 2;
-            
-            svg.style.transform += ` translate(${x * 5}px, ${y * 5}px)`;
+            mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+            mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
         });
-    
-        // ===== 3. REINICIAR EFECTOS AL CAMBIAR DE TEMA =====
+
+        // Suavizado del mouse con RAF
+        const updateMouse = () => {
+            currentMouseX += (mouseX - currentMouseX) * 0.05;
+            currentMouseY += (mouseY - currentMouseY) * 0.05;
+            
+            if (scrollProgress > 0.1) {
+                const intensity = Math.min(1, scrollProgress * 2);
+                svg.style.transform += ` translate(${currentMouseX * 3 * intensity}px, ${currentMouseY * 3 * intensity}px)`;
+            }
+            
+            requestAnimationFrame(updateMouse);
+        };
+        updateMouse();
+
+        // ===== 5. REINICIAR EFECTOS AL CAMBIAR DE TEMA =====
         document.addEventListener('themeChanged', () => {
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            svg.style.opacity = isDark ? '0.7' : '0.9';
+            svg.style.opacity = isDark ? '0.6' : '0.9';
         });
-    
-        console.log('SVG 3D Scroll Effects inicializados');
+
+        // ===== 6. LIMPIEZA AL SALIR =====
+        window.addEventListener('beforeunload', () => {
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+            }
+        });
+
+        console.log('✅ SVG 3D Scroll Effects inicializados');
     }
 
-        // ==============================================
+    // ==============================================
     // EXPERIENCE ANIMATIONS
     // ==============================================
     setupExperienceAnimations() {
@@ -177,10 +234,8 @@ class MainApp  {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const item = entry.target;
-                    // Agregar clase para animación
                     item.classList.add('animate');
                     
-                    // Animar tech-stack items con delay
                     const techItems = item.querySelectorAll('.tech-stack span');
                     techItems.forEach((tech, index) => {
                         setTimeout(() => {
@@ -196,7 +251,6 @@ class MainApp  {
         });
 
         timelineItems.forEach(item => {
-            // Inicializar tech-stack items ocultos
             const techItems = item.querySelectorAll('.tech-stack span');
             techItems.forEach(tech => {
                 tech.style.opacity = '0';
@@ -244,7 +298,6 @@ class MainApp  {
         const loader = document.getElementById('loader');
         if (!loader) return;
 
-        // Hide loader after page load
         window.addEventListener('load', () => {
             setTimeout(() => {
                 loader.classList.add('hidden');
@@ -252,7 +305,6 @@ class MainApp  {
             }, 500);
         });
 
-        // Fallback: hide loader after 3 seconds
         setTimeout(() => {
             if (!loader.classList.contains('hidden')) {
                 loader.classList.add('hidden');
@@ -270,13 +322,8 @@ class MainApp  {
         
         if (!navbar) return;
 
-        // Navbar scroll effect
         this.handleNavbarScroll(navbar);
-        
-        // Active link highlighting
         this.setupActiveLinks(navLinks);
-        
-        // Smooth scrolling for nav links
         this.setupSmoothScrolling(navLinks);
     }
 
@@ -286,14 +333,12 @@ class MainApp  {
         window.addEventListener('scroll', () => {
             const currentScrollY = window.scrollY;
             
-            // Add/remove scrolled class
             if (currentScrollY > 50) {
                 navbar.classList.add('scrolled');
             } else {
                 navbar.classList.remove('scrolled');
             }
             
-            // Hide/show navbar on scroll
             if (currentScrollY > lastScrollY && currentScrollY > 100) {
                 navbar.style.transform = 'translateY(-100%)';
             } else {
@@ -301,7 +346,7 @@ class MainApp  {
             }
             
             lastScrollY = currentScrollY;
-        });
+        }, { passive: true });
     }
 
     setupActiveLinks(navLinks) {
@@ -321,7 +366,7 @@ class MainApp  {
                     if (activeLink) activeLink.classList.add('active');
                 }
             });
-        });
+        }, { passive: true });
     }
 
     setupSmoothScrolling(navLinks) {
@@ -332,14 +377,13 @@ class MainApp  {
                 const targetSection = document.querySelector(targetId);
                 
                 if (targetSection) {
-                    const offsetTop = targetSection.offsetTop - 80; // Account for fixed navbar
+                    const offsetTop = targetSection.offsetTop - 80;
                     
                     window.scrollTo({
                         top: offsetTop,
                         behavior: 'smooth'
                     });
                     
-                    // Close mobile menu if open
                     this.closeMobileMenu();
                 }
             });
@@ -355,11 +399,9 @@ class MainApp  {
         
         if (!themeToggle) return;
 
-        // Load saved theme
         const savedTheme = localStorage.getItem('theme') || 'light';
         this.setTheme(savedTheme, themeIcon);
 
-        // Theme toggle event
         themeToggle.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -371,18 +413,12 @@ class MainApp  {
 
     setTheme(theme, themeIcon) {
         document.documentElement.setAttribute('data-theme', theme);
-        
-        // Disparar evento para que el SVG se ajuste
         document.dispatchEvent(new CustomEvent('themeChanged'));
         
         if (themeIcon) {
-            if (theme === 'dark') {
-                themeIcon.className = 'fas fa-sun';
-            } else {
-                themeIcon.className = 'fas fa-moon';
-            }
+            themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
         }
-    }    
+    }
 
     // ==============================================
     // MOBILE MENU FUNCTIONALITY
@@ -397,14 +433,12 @@ class MainApp  {
             this.toggleMobileMenu();
         });
 
-        // Close menu when clicking outside
         document.addEventListener('click', (e) => {
             if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
                 this.closeMobileMenu();
             }
         });
 
-        // Close menu when clicking on nav links
         const navLinks = navMenu.querySelectorAll('.nav-link');
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
@@ -419,8 +453,6 @@ class MainApp  {
         
         hamburger.classList.toggle('active');
         navMenu.classList.toggle('active');
-        
-        // Prevent body scroll when menu is open
         document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : 'visible';
     }
 
@@ -452,7 +484,7 @@ class MainApp  {
             if (parallax) {
                 parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
             }
-        });
+        }, { passive: true });
     }
 
     setupScrollReveal() {
@@ -469,7 +501,6 @@ class MainApp  {
             });
         }, observerOptions);
 
-        // Observe elements for scroll animations
         const animateElements = document.querySelectorAll('[data-animate]');
         animateElements.forEach(el => observer.observe(el));
     }
@@ -515,11 +546,9 @@ class MainApp  {
             button.addEventListener('click', () => {
                 const filter = button.getAttribute('data-filter');
                 
-                // Update active button
                 filterButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
                 
-                // Filter projects
                 this.filterProjects(projectCards, filter);
             });
         });
@@ -558,7 +587,6 @@ class MainApp  {
             this.handleFormSubmission(form);
         });
 
-        // Real-time validation
         const inputs = form.querySelectorAll('input, textarea');
         inputs.forEach(input => {
             input.addEventListener('blur', () => this.validateField(input));
@@ -571,10 +599,8 @@ class MainApp  {
         const fieldName = field.name;
         let errorMessage = '';
 
-        // Clear previous error
         this.clearFieldError(field);
 
-        // Validation rules
         switch (fieldName) {
             case 'name':
                 if (!value) {
@@ -634,10 +660,8 @@ class MainApp  {
 
     async handleFormSubmission(form) {
         const submitButton = form.querySelector('button[type="submit"]');
-        const formData = new FormData(form);
         let isValid = true;
 
-        // Validate all fields
         const inputs = form.querySelectorAll('input, textarea');
         inputs.forEach(input => {
             if (!this.validateField(input)) {
@@ -647,37 +671,25 @@ class MainApp  {
 
         if (!isValid) return;
 
-        // Show loading state
         submitButton.classList.add('loading');
         submitButton.disabled = true;
 
         try {
-            // Simulate form submission (replace with actual endpoint)
-            await this.simulateFormSubmission(formData);
-            
-            // Show success message
+            await this.simulateFormSubmission();
             this.showNotification('¡Mensaje enviado exitosamente!', 'success');
             form.reset();
-            
         } catch (error) {
             this.showNotification('Error al enviar el mensaje. Inténtalo de nuevo.', 'error');
         } finally {
-            // Reset button state
             submitButton.classList.remove('loading');
             submitButton.disabled = false;
         }
     }
 
-    simulateFormSubmission(formData) {
+    simulateFormSubmission() {
         return new Promise((resolve, reject) => {
-            // Simulate API call delay
             setTimeout(() => {
-                // Simulate success (90% chance)
-                if (Math.random() > 0.1) {
-                    resolve({ success: true });
-                } else {
-                    reject(new Error('Simulated error'));
-                }
+                Math.random() > 0.1 ? resolve({ success: true }) : reject(new Error('Error'));
             }, 2000);
         });
     }
@@ -686,11 +698,9 @@ class MainApp  {
     // NOTIFICATION SYSTEM
     // ==============================================
     showNotification(message, type = 'info') {
-        // Remove existing notifications
         const existingNotifications = document.querySelectorAll('.notification');
         existingNotifications.forEach(notification => notification.remove());
 
-        // Create notification element
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
         notification.innerHTML = `
@@ -700,7 +710,6 @@ class MainApp  {
             </div>
         `;
 
-        // Add styles
         Object.assign(notification.style, {
             position: 'fixed',
             top: '20px',
@@ -717,19 +726,15 @@ class MainApp  {
             backgroundColor: type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'
         });
 
-        // Add to DOM
         document.body.appendChild(notification);
 
-        // Animate in
         setTimeout(() => {
             notification.style.transform = 'translateX(0)';
         }, 100);
 
-        // Close button functionality
         const closeButton = notification.querySelector('.notification-close');
         closeButton.addEventListener('click', () => this.removeNotification(notification));
 
-        // Auto remove after 5 seconds
         setTimeout(() => this.removeNotification(notification), 5000);
     }
 
@@ -749,16 +754,14 @@ class MainApp  {
         const backToTopButton = document.getElementById('backToTop');
         if (!backToTopButton) return;
 
-        // Show/hide button based on scroll position
         window.addEventListener('scroll', () => {
             if (window.pageYOffset > 300) {
                 backToTopButton.classList.add('show');
             } else {
                 backToTopButton.classList.remove('show');
             }
-        });
+        }, { passive: true });
 
-        // Scroll to top functionality
         backToTopButton.addEventListener('click', () => {
             window.scrollTo({
                 top: 0,
@@ -794,9 +797,8 @@ class MainApp  {
 
     animateCounter(element, target) {
         let current = 0;
-        const increment = target / 50; // Adjust speed
-        const duration = 2000; // 2 seconds
-        const stepTime = duration / 50;
+        const increment = target / 50;
+        const stepTime = 2000 / 50;
 
         const updateCounter = () => {
             current += increment;
@@ -818,7 +820,6 @@ class MainApp  {
         const particlesContainer = document.querySelector('.hero-particles');
         if (!particlesContainer) return;
 
-        // Create particles
         for (let i = 0; i < 50; i++) {
             this.createParticle(particlesContainer);
         }
@@ -828,7 +829,6 @@ class MainApp  {
         const particle = document.createElement('div');
         particle.className = 'particle';
         
-        // Random properties
         const size = Math.random() * 4 + 2;
         const x = Math.random() * 100;
         const y = Math.random() * 100;
@@ -854,26 +854,15 @@ class MainApp  {
     // ANIMATIONS SETUP
     // ==============================================
     setupAnimations() {
-        // Add CSS for particle animation if not present
         if (!document.querySelector('#particle-animation-css')) {
             const style = document.createElement('style');
             style.id = 'particle-animation-css';
             style.textContent = `
                 @keyframes particleFloat {
-                    0% {
-                        transform: translateY(0px) rotate(0deg);
-                        opacity: 0;
-                    }
-                    10% {
-                        opacity: 0.1;
-                    }
-                    90% {
-                        opacity: 0.1;
-                    }
-                    100% {
-                        transform: translateY(-100vh) rotate(360deg);
-                        opacity: 0;
-                    }
+                    0% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+                    10% { opacity: 0.1; }
+                    90% { opacity: 0.1; }
+                    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
                 }
                 
                 .notification-content {
@@ -939,34 +928,22 @@ class MainApp  {
 // ==============================================
 // INITIALIZE APPLICATION
 // ==============================================
-const portfolioApp = new MainApp ();
+const portfolioApp = new MainApp();
 
 // ==============================================
 // ADDITIONAL EVENT LISTENERS
 // ==============================================
 
-// Performance optimization: Use passive event listeners for scroll
-window.addEventListener('scroll', portfolioApp.throttle(() => {
-    // Additional scroll-based functionality can be added here
-}, 16), { passive: true }); // 60fps
+window.addEventListener('scroll', portfolioApp.throttle(() => {}, 16), { passive: true });
 
-// Handle window resize events
 window.addEventListener('resize', portfolioApp.debounce(() => {
-    // Handle responsive adjustments
     if (window.innerWidth > 768) {
         portfolioApp.closeMobileMenu();
     }
 }, 250));
 
-// Handle visibility change (when user switches tabs)
 document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-        // Pause animations when tab is not visible
-        document.body.classList.add('page-hidden');
-    } else {
-        // Resume animations when tab becomes visible
-        document.body.classList.remove('page-hidden');
-    }
+    document.body.classList.toggle('page-hidden', document.hidden);
 });
 
 // ==============================================
@@ -985,6 +962,7 @@ console.log(`
 • Intersection Observer APIs
 • Mobile-First Approach
 • Accessibility Features
+• SVG 3D Background with Scroll Effects
 
 💻 Built with modern JavaScript ES6+
 🎨 Styled with CSS Custom Properties
@@ -997,5 +975,5 @@ Made with ❤️ for developers
 // EXPORT FOR MODULE USAGE (if needed)
 // ==============================================
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = PortfolioApp;
+    module.exports = MainApp;
 }
