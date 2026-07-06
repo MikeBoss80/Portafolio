@@ -1,165 +1,144 @@
 // ==============================================
-// CUSTOM 3D CURSOR
+// CUSTOM CURSOR - VERSIÓN RÁPIDA Y LIVIANA
 // ==============================================
 class CustomCursor {
     constructor() {
         this.cursor = null;
         this.cursorGlow = null;
-        this.cursorText = null;
+        this.mouseX = 0;
+        this.mouseY = 0;
+        this.cursorX = 0;
+        this.cursorY = 0;
         this.isHovering = false;
+        this.speed = 0.15; // ← Velocidad de seguimiento (0.1 = lento, 0.3 = rápido)
         
         this.init();
     }
 
     init() {
-        // Create cursor elements
+        // Solo crear en desktop
+        if ('ontouchstart' in window) return;
+        
         this.createCursor();
         this.setupEvents();
+        this.animate();
     }
 
     createCursor() {
-        // Main cursor
+        // ===== CURSOR PRINCIPAL (más pequeño y rápido) =====
         this.cursor = document.createElement('div');
         this.cursor.className = 'custom-cursor';
-        this.cursor.style.cssText = `
-            position: fixed;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #004687;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            transition: all 0.15s ease;
-            transform: translate(-50%, -50%);
-            mix-blend-mode: difference;
-        `;
+        Object.assign(this.cursor.style, {
+            position: 'fixed',
+            width: '16px',              // ← Más pequeño
+            height: '16px',
+            border: '2px solid #004687',
+            borderRadius: '50%',
+            pointerEvents: 'none',
+            zIndex: '9999',
+            transform: 'translate(-50%, -50%)',
+            transition: 'width 0.2s ease, height 0.2s ease, border-color 0.2s ease', // ← Solo transiciones necesarias
+            willChange: 'transform'      // ← Optimiza rendimiento
+        });
 
-        // Glow effect
+        // ===== GLOW (más pequeño y sin transiciones pesadas) =====
         this.cursorGlow = document.createElement('div');
         this.cursorGlow.className = 'custom-cursor-glow';
-        this.cursorGlow.style.cssText = `
-            position: fixed;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9998;
-            background: radial-gradient(circle, rgba(0,70,135,0.15) 0%, transparent 70%);
-            transform: translate(-50%, -50%);
-            transition: all 0.3s ease;
-        `;
-
-        // Text label (optional)
-        this.cursorText = document.createElement('div');
-        this.cursorText.className = 'custom-cursor-text';
-        this.cursorText.style.cssText = `
-            position: fixed;
-            color: white;
-            font-size: 12px;
-            pointer-events: none;
-            z-index: 10000;
-            transform: translate(-50%, -50%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            font-weight: 500;
-            text-shadow: 0 0 10px rgba(0,0,0,0.5);
-        `;
+        Object.assign(this.cursorGlow.style, {
+            position: 'fixed',
+            width: '40px',               // ← Más pequeño
+            height: '40px',
+            borderRadius: '50%',
+            pointerEvents: 'none',
+            zIndex: '9998',
+            background: 'radial-gradient(circle, rgba(0,70,135,0.12) 0%, transparent 70%)',
+            transform: 'translate(-50%, -50%)',
+            opacity: '0.5',
+            willChange: 'transform'      // ← Optimiza rendimiento
+        });
 
         document.body.appendChild(this.cursor);
         document.body.appendChild(this.cursorGlow);
-        document.body.appendChild(this.cursorText);
-
-        // Hide default cursor
         document.body.style.cursor = 'none';
     }
 
     setupEvents() {
-        // Mouse movement
+        // ===== Evento de mouse (solo actualiza coordenadas) =====
         document.addEventListener('mousemove', (e) => {
-            this.updateCursor(e.clientX, e.clientY);
+            this.mouseX = e.clientX;
+            this.mouseY = e.clientY;
         });
 
-        // Mouse over interactive elements
-        const interactiveElements = document.querySelectorAll('a, button, .btn, .project-card, .social-link, .filter-btn');
+        // ===== Eventos hover (sin animaciones pesadas) =====
+        const interactiveElements = document.querySelectorAll(
+            'a, button, .btn, .project-card, .social-link, .filter-btn'
+        );
+        
         interactiveElements.forEach(el => {
-            el.addEventListener('mouseenter', () => this.onHoverStart(el));
-            el.addEventListener('mouseleave', () => this.onHoverEnd());
+            el.addEventListener('mouseenter', () => {
+                this.isHovering = true;
+                // Cambios rápidos sin transiciones pesadas
+                this.cursor.style.width = '32px';
+                this.cursor.style.height = '32px';
+                this.cursor.style.borderColor = '#0066CC';
+                this.cursor.style.backgroundColor = 'rgba(0,70,135,0.08)';
+                
+                this.cursorGlow.style.width = '60px';
+                this.cursorGlow.style.height = '60px';
+                this.cursorGlow.style.background = 'radial-gradient(circle, rgba(0,70,135,0.2) 0%, transparent 70%)';
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                this.isHovering = false;
+                this.cursor.style.width = '16px';
+                this.cursor.style.height = '16px';
+                this.cursor.style.borderColor = '#004687';
+                this.cursor.style.backgroundColor = 'transparent';
+                
+                this.cursorGlow.style.width = '40px';
+                this.cursorGlow.style.height = '40px';
+                this.cursorGlow.style.background = 'radial-gradient(circle, rgba(0,70,135,0.12) 0%, transparent 70%)';
+            });
         });
 
-        // Mouse down/up for click effect
+        // ===== Click effect (sin transiciones pesadas) =====
         document.addEventListener('mousedown', () => {
-            this.cursor.style.transform = 'translate(-50%, -50%) scale(0.8)';
+            this.cursor.style.transform = 'translate(-50%, -50%) scale(0.7)';
         });
+        
         document.addEventListener('mouseup', () => {
             this.cursor.style.transform = 'translate(-50%, -50%) scale(1)';
         });
 
-        // Mouse leave document
+        // ===== Ocultar al salir de la página =====
         document.addEventListener('mouseleave', () => {
-            this.cursor.style.opacity = '0';
-            this.cursorGlow.style.opacity = '0';
-            this.cursorText.style.opacity = '0';
+            this.cursor.style.display = 'none';
+            this.cursorGlow.style.display = 'none';
         });
+        
         document.addEventListener('mouseenter', () => {
-            this.cursor.style.opacity = '1';
-            this.cursorGlow.style.opacity = '1';
+            this.cursor.style.display = 'block';
+            this.cursorGlow.style.display = 'block';
         });
     }
 
-    updateCursor(x, y) {
-        // Update cursor position with slight delay for smoothness
-        this.cursor.style.left = x + 'px';
-        this.cursor.style.top = y + 'px';
+    // ===== ANIMACIÓN CON REQUESTANIMATIONFRAME (más suave) =====
+    animate() {
+        // Calcular posición con interpolación suave
+        this.cursorX += (this.mouseX - this.cursorX) * this.speed;
+        this.cursorY += (this.mouseY - this.cursorY) * this.speed;
 
-        // Update glow with more delay for trailing effect
-        setTimeout(() => {
-            this.cursorGlow.style.left = x + 'px';
-            this.cursorGlow.style.top = y + 'px';
-        }, 50);
+        // Aplicar posición (usando transform para mejor rendimiento)
+        this.cursor.style.transform = `translate(${this.cursorX - 8}px, ${this.cursorY - 8}px)`;
+        this.cursorGlow.style.transform = `translate(${this.cursorX - 20}px, ${this.cursorY - 20}px)`;
 
-        this.cursorText.style.left = x + 'px';
-        this.cursorText.style.top = (y - 40) + 'px';
-    }
-
-    onHoverStart(el) {
-        // Expand cursor
-        this.cursor.style.width = '40px';
-        this.cursor.style.height = '40px';
-        this.cursor.style.borderColor = '#0066CC';
-        this.cursor.style.backgroundColor = 'rgba(0,70,135,0.1)';
-
-        // Glow effect
-        this.cursorGlow.style.width = '120px';
-        this.cursorGlow.style.height = '120px';
-        this.cursorGlow.style.background = 'radial-gradient(circle, rgba(0,70,135,0.25) 0%, transparent 70%)';
-
-        // Show text if element has text
-        const text = el.textContent.trim();
-        if (text && text.length < 20) {
-            this.cursorText.textContent = text;
-            this.cursorText.style.opacity = '1';
-        }
-
-        this.isHovering = true;
-    }
-
-    onHoverEnd() {
-        // Reset cursor
-        this.cursor.style.width = '20px';
-        this.cursor.style.height = '20px';
-        this.cursor.style.borderColor = '#004687';
-        this.cursor.style.backgroundColor = 'transparent';
-
-        this.cursorGlow.style.width = '80px';
-        this.cursorGlow.style.height = '80px';
-        this.cursorGlow.style.background = 'radial-gradient(circle, rgba(0,70,135,0.15) 0%, transparent 70%)';
-
-        this.cursorText.style.opacity = '0';
-        this.isHovering = false;
+        requestAnimationFrame(() => this.animate());
     }
 }
 
-// Initialize custom cursor
+// Inicializar
 document.addEventListener('DOMContentLoaded', () => {
-    const customCursor = new CustomCursor();
+    if (!('ontouchstart' in window)) {
+        const customCursor = new CustomCursor();
+    }
 });
