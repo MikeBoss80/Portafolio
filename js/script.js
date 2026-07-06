@@ -28,10 +28,10 @@ class MainApp  {
         this.setupBackToTop();
         this.setupStatCounters();
         this.setupParticles();
-        this.setupExperienceAnimations();  // ← NUEVO
-        this.setupLanguageBars();          // ← NUEVO
+        this.setupExperienceAnimations();
+        this.setupLanguageBars();
+        this.setupSVG3DEffects();  // ← AGREGAR ESTO
         
-        // Initialize AOS
         if (typeof AOS !== 'undefined') {
             AOS.init({
                 duration: 800,
@@ -370,6 +370,9 @@ setupSVG3DEffects() {
     setTheme(theme, themeIcon) {
         document.documentElement.setAttribute('data-theme', theme);
         
+        // Disparar evento para que el SVG se ajuste
+        document.dispatchEvent(new CustomEvent('themeChanged'));
+        
         if (themeIcon) {
             if (theme === 'dark') {
                 themeIcon.className = 'fas fa-sun';
@@ -377,7 +380,7 @@ setupSVG3DEffects() {
                 themeIcon.className = 'fas fa-moon';
             }
         }
-    }
+    }    
 
     // ==============================================
     // MOBILE MENU FUNCTIONALITY
