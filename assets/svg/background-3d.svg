@@ -1,0 +1,419 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- ═══ GRADIENTES MEJORADOS ═══ -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#030307"/>
+      <stop offset="50%" stop-color="#080711"/>
+      <stop offset="100%" stop-color="#020205"/>
+    </linearGradient>
+    
+    <radialGradient id="nebulaCyan" cx="30%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#00f2fe" stop-opacity="0.2"/>
+      <stop offset="45%" stop-color="#0072ff" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="nebulaPurp" cx="70%" cy="60%" r="60%">
+      <stop offset="0%" stop-color="#7928ca" stop-opacity="0.25"/>
+      <stop offset="40%" stop-color="#ff0080" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="nebulaPink" cx="50%" cy="80%" r="50%">
+      <stop offset="0%" stop-color="#ff0080" stop-opacity="0.18"/>
+      <stop offset="50%" stop-color="#7928ca" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="lensFlare" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="8%" stop-color="#00f2fe" stop-opacity="0.45"/>
+      <stop offset="35%" stop-color="#7928ca" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="vignette" cx="50%" cy="50%" r="75%">
+      <stop offset="55%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.88"/>
+    </radialGradient>
+
+    <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="18%" stop-color="#00f2fe" stop-opacity="0.95"/>
+      <stop offset="50%" stop-color="#7928ca" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="nodeGlowMagenta" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="18%" stop-color="#ff0080" stop-opacity="0.95"/>
+      <stop offset="50%" stop-color="#7928ca" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="pulseCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f2fe" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#0072ff" stop-opacity="0"/>
+    </linearGradient>
+
+    <linearGradient id="pulseMagenta" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff0080" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#7928ca" stop-opacity="0"/>
+    </linearGradient>
+
+    <linearGradient id="lineGradCyan" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00f2fe" stop-opacity="0.15"/>
+      <stop offset="50%" stop-color="#00f2fe" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#00f2fe" stop-opacity="0.15"/>
+    </linearGradient>
+
+    <linearGradient id="lineGradPurp" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7928ca" stop-opacity="0.15"/>
+      <stop offset="50%" stop-color="#7928ca" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#7928ca" stop-opacity="0.15"/>
+    </linearGradient>
+
+    <!-- ═══ FILTROS MEJORADOS ═══ -->
+    <filter id="blurBack" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8"/>
+    </filter>
+    <filter id="blurMid" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="3.5"/>
+    </filter>
+    <filter id="bloom" x="-70%" y="-70%" width="240%" height="240%">
+      <feGaussianBlur stdDeviation="7" result="b1"/>
+      <feGaussianBlur stdDeviation="15" result="b2"/>
+      <feMerge>
+        <feMergeNode in="b2"/>
+        <feMergeNode in="b1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="bloomStrong" x="-90%" y="-90%" width="280%" height="280%">
+      <feGaussianBlur stdDeviation="12" result="b1"/>
+      <feGaussianBlur stdDeviation="22" result="b2"/>
+      <feMerge>
+        <feMergeNode in="b2"/>
+        <feMergeNode in="b1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" result="noise"/>
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.06 0"/>
+    </filter>
+
+    <!-- ═══ SÍMBOLOS ═══ -->
+    <g id="star">
+      <circle cx="0" cy="0" r="1.5" fill="#ffffff"/>
+    </g>
+    <g id="starBright">
+      <circle cx="0" cy="0" r="2.5" fill="#ffffff"/>
+      <circle cx="0" cy="0" r="5" fill="#ffffff" opacity="0.35"/>
+    </g>
+    
+    <g id="networkNode">
+      <circle cx="0" cy="0" r="12" fill="url(#nodeGlow)"/>
+      <circle cx="0" cy="0" r="3.5" fill="#ffffff"/>
+    </g>
+    <g id="networkNodeMagenta">
+      <circle cx="0" cy="0" r="12" fill="url(#nodeGlowMagenta)"/>
+      <circle cx="0" cy="0" r="3.5" fill="#ffffff"/>
+    </g>
+  </defs>
+
+  <!-- ═══ FONDO BASE ═══ -->
+  <rect width="1920" height="1080" fill="url(#bgGrad)"/>
+
+  <!-- ═══ NEBULOSAS ANIMADAS ═══ -->
+  <g>
+    <rect width="1920" height="1080" fill="url(#nebulaCyan)">
+      <animateTransform attributeName="transform" type="translate" from="-70 -50" to="70 60" dur="28s" repeatCount="indefinite" autoReverse="true"/>
+    </rect>
+    <rect width="1920" height="1080" fill="url(#nebulaPurp)">
+      <animateTransform attributeName="transform" type="translate" from="80 50" to="-60 -70" dur="33s" repeatCount="indefinite" autoReverse="true"/>
+    </rect>
+    <rect width="1920" height="1080" fill="url(#nebulaPink)">
+      <animateTransform attributeName="transform" type="translate" from="-50 60" to="50 -40" dur="38s" repeatCount="indefinite" autoReverse="true"/>
+    </rect>
+  </g>
+
+  <!-- Textura de ruido -->
+  <rect width="1920" height="1080" filter="url(#noise)"/>
+
+  <!-- ═══════════════════════════════════════════
+       CAPA BACK — muy lejana, muy borrosa (simula Z=-300)
+       ═══════════════════════════════════════════ -->
+  <g filter="url(#blurBack)" opacity="0.5">
+    <animateTransform attributeName="transform" type="translate" values="0,0; 6,4; -4,6; 0,0" dur="35s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="scale" values="1; 1.02; 0.99; 1" dur="50s" repeatCount="indefinite" additive="sum"/>
+    
+    <!-- Estrellas lejanas -->
+    <g fill="#ffffff">
+      <use href="#star" x="100" y="200" opacity="0.3"><animate attributeName="opacity" values="0.3;0.8;0.3" dur="4s" repeatCount="indefinite"/></use>
+      <use href="#star" x="250" y="750" opacity="0.5"><animate attributeName="opacity" values="0.5;0.1;0.5" dur="3s" repeatCount="indefinite"/></use>
+      <use href="#star" x="450" y="150" opacity="0.2"><animate attributeName="opacity" values="0.2;0.9;0.2" dur="5s" repeatCount="indefinite"/></use>
+      <use href="#star" x="300" y="900" opacity="0.6"><animate attributeName="opacity" values="0.6;0.2;0.6" dur="3.5s" repeatCount="indefinite"/></use>
+      <use href="#star" x="700" y="350" opacity="0.4"><animate attributeName="opacity" values="0.4;0.8;0.4" dur="4.5s" repeatCount="indefinite"/></use>
+      <use href="#star" x="850" y="800" opacity="0.1"><animate attributeName="opacity" values="0.1;0.7;0.1" dur="6s" repeatCount="indefinite"/></use>
+      <use href="#star" x="1100" y="150" opacity="0.5"><animate attributeName="opacity" values="0.5;0.2;0.5" dur="3.8s" repeatCount="indefinite"/></use>
+      <use href="#star" x="1350" y="950" opacity="0.3"><animate attributeName="opacity" values="0.3;0.9;0.3" dur="4.2s" repeatCount="indefinite"/></use>
+      <use href="#star" x="1600" y="400" opacity="0.7"><animate attributeName="opacity" values="0.7;0.3;0.7" dur="2.8s" repeatCount="indefinite"/></use>
+      <use href="#star" x="1800" y="750" opacity="0.2"><animate attributeName="opacity" values="0.2;0.8;0.2" dur="5.5s" repeatCount="indefinite"/></use>
+      <use href="#star" x="1250" y="600" opacity="0.4"><animate attributeName="opacity" values="0.4;0.1;0.4" dur="4.8s" repeatCount="indefinite"/></use>
+      <use href="#star" x="950" y="450" opacity="0.6"><animate attributeName="opacity" values="0.6;0.9;0.6" dur="3.2s" repeatCount="indefinite"/></use>
+      <use href="#star" x="550" y="650" opacity="0.3"><animate attributeName="opacity" values="0.3;0.7;0.3" dur="5.1s" repeatCount="indefinite"/></use>
+      <use href="#star" x="1700" y="150" opacity="0.5"><animate attributeName="opacity" values="0.5;0.2;0.5" dur="4.3s" repeatCount="indefinite"/></use>
+      <use href="#star" x="150" y="550" opacity="0.4"><animate attributeName="opacity" values="0.4;0.8;0.4" dur="3.7s" repeatCount="indefinite"/></use>
+      <use href="#star" x="1450" y="250" opacity="0.6"><animate attributeName="opacity" values="0.6;0.2;0.6" dur="4.6s" repeatCount="indefinite"/></use>
+      <use href="#star" x="50" y="950" opacity="0.3"><animate attributeName="opacity" values="0.3;0.7;0.3" dur="5.3s" repeatCount="indefinite"/></use>
+    </g>
+
+    <!-- Red neuronal lejana -->
+    <g stroke="#5045e5" stroke-width="1.2" fill="none" opacity="0.6">
+      <path d="M150,250 Q 300,150 450,300 T 800,200"/>
+      <path d="M400,700 Q 650,500 850,750 T 1300,650"/>
+      <path d="M900,200 Q 1200,350 1400,150 T 1750,350"/>
+      <path d="M150,250 Q 250,550 400,700"/>
+      <path d="M450,300 Q 600,500 850,350"/>
+      <path d="M800,200 Q 1050,400 1300,250"/>
+      <path d="M1100,850 Q 1400,700 1650,800"/>
+      <path d="M200,100 Q 400,200 600,100"/>
+      <path d="M1500,900 Q 1700,800 1850,950"/>
+    </g>
+
+    <g fill="#00f2fe" opacity="0.7">
+      <circle cx="150" cy="250" r="3.5"/>
+      <circle cx="450" cy="300" r="4.5"/>
+      <circle cx="400" cy="700" r="4"/>
+      <circle cx="800" cy="200" r="3.5"/>
+      <circle cx="850" cy="750" r="4.5"/>
+      <circle cx="1300" cy="650" r="3.5"/>
+      <circle cx="1400" cy="150" r="4"/>
+      <circle cx="1750" cy="350" r="4.5"/>
+      <circle cx="200" cy="100" r="3"/>
+      <circle cx="1500" cy="900" r="3.5"/>
+    </g>
+  </g>
+
+  <!-- ═══════════════════════════════════════════
+       CAPA MID — profundidad media (simula Z=-150)
+       ═══════════════════════════════════════════ -->
+  <g filter="url(#blurMid)" opacity="0.8">
+    <animateTransform attributeName="transform" type="translate" values="0,0; -4,5; 6,-3; 0,0" dur="40s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="scale" values="1; 1.015; 0.995; 1" dur="48s" repeatCount="indefinite" additive="sum"/>
+
+    <!-- Estrellas medias -->
+    <g fill="#ffffff">
+      <use href="#star" x="200" y="450" opacity="0.6"><animate attributeName="opacity" values="0.6;0.1;0.6" dur="3.1s" repeatCount="indefinite"/></use>
+      <use href="#star" x="600" y="850" opacity="0.4"><animate attributeName="opacity" values="0.4;0.9;0.4" dur="4.3s" repeatCount="indefinite"/></use>
+      <use href="#star" x="1150" y="250" opacity="0.8"><animate attributeName="opacity" values="0.8;0.3;0.8" dur="2.5s" repeatCount="indefinite"/></use>
+      <use href="#star" x="1650" y="650" opacity="0.5"><animate attributeName="opacity" values="0.5;0.8;0.5" dur="3.7s" repeatCount="indefinite"/></use>
+      <use href="#star" x="350" y="150" opacity="0.7"><animate attributeName="opacity" values="0.7;0.2;0.7" dur="3.4s" repeatCount="indefinite"/></use>
+      <use href="#star" x="1000" y="950" opacity="0.4"><animate attributeName="opacity" values="0.4;0.9;0.4" dur="4.7s" repeatCount="indefinite"/></use>
+    </g>
+
+    <!-- Conexiones de red media -->
+    <g stroke="#7928ca" stroke-width="1.8" fill="none" opacity="0.65">
+      <path id="midP1" d="M250,350 Q 380,200 550,400 T 900,300" stroke="url(#pulseCyan)"/>
+      <path id="midP2" d="M300,650 Q 500,500 700,700 T 1150,550" stroke="url(#pulseMagenta)"/>
+      <path id="midP3" d="M850,250 Q 1100,100 1350,300 T 1650,450"/>
+      
+      <path d="M250,350 Q 280,500 300,650"/>
+      <path d="M550,400 Q 600,550 700,700"/>
+      <path d="M900,300 Q 1000,450 1150,550"/>
+      <path d="M1350,300 Q 1500,500 1650,650"/>
+      <path d="M550,400 Q 700,300 850,250"/>
+      <path d="M700,700 Q 950,650 1200,850"/>
+      <path d="M100,500 Q 200,400 350,500"/>
+      <path d="M1400,700 Q 1550,600 1700,750"/>
+    </g>
+
+    <!-- Pulsos viajando por la red media -->
+    <g fill="#ffffff">
+      <circle r="3.5" fill="#00f2fe">
+        <animateMotion dur="7s" repeatCount="indefinite" path="M250,350 Q 380,200 550,400 T 900,300" />
+      </circle>
+      <circle r="4" fill="#ff0080">
+        <animateMotion dur="9s" repeatCount="indefinite" path="M1150,550 T 700,700 Q 500,500 300,650" />
+      </circle>
+      <circle r="3.5" fill="#ffffff">
+        <animateMotion dur="6s" repeatCount="indefinite" path="M850,250 Q 1100,100 1350,300 T 1650,450" />
+      </circle>
+      <circle r="3" fill="#00f2fe">
+        <animateMotion dur="8s" repeatCount="indefinite" path="M350,500 Q 200,400 100,500" />
+      </circle>
+      <circle r="3.5" fill="#ff0080">
+        <animateMotion dur="7.5s" repeatCount="indefinite" path="M1700,750 Q 1550,600 1400,700" />
+      </circle>
+    </g>
+
+    <!-- Nodos de red media -->
+    <g>
+      <circle cx="250" cy="350" r="6" fill="#7928ca"/>
+      <circle cx="550" cy="400" r="7" fill="#00f2fe"/>
+      <circle cx="900" cy="300" r="6" fill="#7928ca"/>
+      <circle cx="300" cy="650" r="6.5" fill="#ff0080"/>
+      <circle cx="700" cy="700" r="7" fill="#7928ca"/>
+      <circle cx="1150" cy="550" r="7.5" fill="#00f2fe"/>
+      <circle cx="850" cy="250" r="6" fill="#ff0080"/>
+      <circle cx="1350" cy="300" r="6.5" fill="#7928ca"/>
+      <circle cx="1650" cy="450" r="7" fill="#00f2fe"/>
+      <circle cx="1200" cy="850" r="6" fill="#ff0080"/>
+      <circle cx="100" cy="500" r="5.5" fill="#00f2fe"/>
+      <circle cx="1700" cy="750" r="6" fill="#ff0080"/>
+    </g>
+  </g>
+
+  <!-- ═══════════════════════════════════════════
+       CAPA FRONT — cercana, nítida (simula Z=0)
+       ═══════════════════════════════════════════ -->
+  <g filter="url(#bloom)">
+    <animateTransform attributeName="transform" type="translate" values="0,0; -7,-4; 4,-7; 0,0" dur="28s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="scale" values="1; 1.01; 0.998; 1" dur="42s" repeatCount="indefinite" additive="sum"/>
+
+    <!-- Estrellas brillantes cercanas -->
+    <g fill="#ffffff" opacity="0.9">
+      <circle cx="450" cy="250" r="2"><animate attributeName="opacity" values="0.2;1;0.2" dur="4s" repeatCount="indefinite"/></circle>
+      <circle cx="520" cy="210" r="2.5" fill="#00f2fe"><animate attributeName="transform" type="translate" values="0,0; 18,-22; 0,0" dur="13s" repeatCount="indefinite"/></circle>
+      <circle cx="380" cy="280" r="1.5"><animate attributeName="opacity" values="0.8;0.2;0.8" dur="3s" repeatCount="indefinite"/></circle>
+      
+      <circle cx="1300" cy="750" r="2.5" fill="#ff0080"><animate attributeName="transform" type="translate" values="0,0; -22,18; 0,0" dur="15s" repeatCount="indefinite"/></circle>
+      <circle cx="1400" cy="680" r="2"><animate attributeName="opacity" values="0.1;0.9;0.1" dur="5s" repeatCount="indefinite"/></circle>
+      <circle cx="1250" cy="820" r="3" fill="#00f2fe"><animate attributeName="transform" type="translate" values="0,0; 12,28; 0,0" dur="11s" repeatCount="indefinite"/></circle>
+
+      <circle cx="150" cy="850" r="3"><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></circle>
+      <circle cx="850" cy="100" r="2"><animate attributeName="opacity" values="0.2;1;0.2" dur="3.5s" repeatCount="indefinite"/></circle>
+      <circle cx="1750" cy="200" r="2.5"><animate attributeName="opacity" values="0.9;0.4;0.9" dur="2.8s" repeatCount="indefinite"/></circle>
+      <circle cx="1050" cy="900" r="3" fill="#00f2fe"><animate attributeName="opacity" values="0.3;1;0.3" dur="4.1s" repeatCount="indefinite"/></circle>
+      <circle cx="250" cy="100" r="2" fill="#ff0080"><animate attributeName="opacity" values="0.4;1;0.4" dur="3.2s" repeatCount="indefinite"/></circle>
+      <circle cx="1600" cy="950" r="2.5"><animate attributeName="opacity" values="0.6;0.2;0.6" dur="4.5s" repeatCount="indefinite"/></circle>
+    </g>
+
+    <!-- Conexiones de red frontal -->
+    <g stroke="url(#pulseCyan)" stroke-width="2.5" fill="none">
+      <path d="M400,450 Q 550,300 750,450 T 1200,350"/>
+      <path d="M450,200 Q 700,250 850,500 T 1350,550" stroke="url(#pulseMagenta)"/>
+      <path d="M350,550 Q 600,650 900,550 T 1500,600"/>
+      
+      <path d="M450,200 Q 380,320 400,450" stroke-width="2"/>
+      <path d="M400,450 Q 360,500 350,550" stroke-width="2"/>
+      <path d="M750,450 Q 800,350 850,200" stroke="url(#pulseMagenta)" stroke-width="2"/>
+      <path d="M750,450 Q 800,500 850,500" stroke-width="2"/>
+      <path d="M850,500 Q 880,530 900,550" stroke-width="2"/>
+      <path d="M1200,350 Q 1300,450 1350,550" stroke-width="2"/>
+      <path d="M1350,550 Q 1420,580 1500,600" stroke-width="2"/>
+      <path d="M200,300 Q 300,250 450,200" stroke-width="1.8"/>
+      <path d="M1500,600 Q 1600,650 1700,600" stroke-width="1.8"/>
+    </g>
+
+    <!-- Pulsos viajando por la red frontal -->
+    <g fill="#ffffff">
+      <circle r="5" fill="#ffffff">
+        <animateMotion dur="4.5s" repeatCount="indefinite" path="M400,450 Q 550,300 750,450 T 1200,350" />
+      </circle>
+      <circle r="5" fill="#00f2fe">
+        <animateMotion dur="5.5s" repeatCount="indefinite" path="M450,200 Q 700,250 850,500 T 1350,550" />
+      </circle>
+      <circle r="5.5" fill="#ff0080">
+        <animateMotion dur="6.5s" repeatCount="indefinite" path="M1500,600 T 900,550 Q 600,650 350,550" />
+      </circle>
+      <circle r="4.5" fill="#00f2fe">
+        <animateMotion dur="5s" repeatCount="indefinite" path="M200,300 Q 300,250 450,200" />
+      </circle>
+      <circle r="4.5" fill="#ff0080">
+        <animateMotion dur="5.8s" repeatCount="indefinite" path="M1700,600 Q 1600,650 1500,600" />
+      </circle>
+    </g>
+
+    <!-- Nodos de red frontal con anillos pulsantes -->
+    <g>
+      <g transform="translate(450, 200)">
+        <use href="#networkNode"/>
+        <circle cx="0" cy="0" r="16" fill="none" stroke="#00f2fe" stroke-width="1.2" opacity="0.45">
+          <animate attributeName="r" values="10;22;10" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.6;0;0.6" dur="3s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+      
+      <g transform="translate(400, 450)">
+        <use href="#networkNode"/>
+        <circle cx="0" cy="0" r="14" fill="none" stroke="#7928ca" stroke-width="1.2" opacity="0.55">
+          <animate attributeName="r" values="8;18;8" dur="3.5s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+
+      <g transform="translate(350, 550)">
+        <use href="#networkNode"/>
+      </g>
+
+      <g transform="translate(750, 450)">
+        <use href="#networkNode"/>
+        <circle cx="0" cy="0" r="20" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.35">
+          <animate attributeName="r" values="12;26;12" dur="4s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.5;0;0.5" dur="4s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+
+      <g transform="translate(850, 200)">
+        <use href="#networkNode"/>
+      </g>
+
+      <g transform="translate(850, 500)">
+        <use href="#networkNode"/>
+        <circle cx="0" cy="0" r="13" fill="none" stroke="#ff0080" stroke-width="1.2" opacity="0.45">
+          <animate attributeName="r" values="9;17;9" dur="2.8s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+
+      <g transform="translate(900, 550)">
+        <use href="#networkNode"/>
+      </g>
+
+      <g transform="translate(1200, 350)">
+        <use href="#networkNode"/>
+        <circle cx="0" cy="0" r="18" fill="none" stroke="#00f2fe" stroke-width="1.2" opacity="0.45">
+          <animate attributeName="r" values="11;24;11" dur="3.2s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+
+      <g transform="translate(1350, 550)">
+        <use href="#networkNode"/>
+      </g>
+
+      <g transform="translate(1500, 600)">
+        <use href="#networkNode"/>
+        <circle cx="0" cy="0" r="22" fill="none" stroke="#7928ca" stroke-width="1.2" opacity="0.35">
+          <animate attributeName="r" values="14;30;14" dur="5s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.7;0;0.7" dur="5s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+
+      <g transform="translate(200, 300)">
+        <use href="#networkNodeMagenta"/>
+        <circle cx="0" cy="0" r="15" fill="none" stroke="#ff0080" stroke-width="1" opacity="0.4">
+          <animate attributeName="r" values="10;20;10" dur="3.8s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+
+      <g transform="translate(1700, 600)">
+        <use href="#networkNodeMagenta"/>
+        <circle cx="0" cy="0" r="14" fill="none" stroke="#ff0080" stroke-width="1" opacity="0.4">
+          <animate attributeName="r" values="9;19;9" dur="4.2s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+    </g>
+
+    <!-- Lens flare central -->
+    <circle cx="750" cy="450" r="280" fill="url(#lensFlare)" opacity="0.45" style="mix-blend-mode: screen;">
+      <animate attributeName="opacity" values="0.35;0.45;0.25;0.55;0.35" dur="20s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="260;300;270;260" dur="25s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- Viñeta final -->
+  <rect width="1920" height="1080" fill="url(#vignette)" style="mix-blend-mode: multiply;"/>
+</svg>
