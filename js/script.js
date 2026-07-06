@@ -14,7 +14,6 @@ class MainApp  {
             this.initializeApp();
         }
     }
-
     initializeApp() {
         this.setupLoader();
         this.setupNavigation();
@@ -30,7 +29,7 @@ class MainApp  {
         this.setupParticles();
         this.setupExperienceAnimations();
         this.setupLanguageBars();
-        this.setupSVG3DEffects();  // ← AGREGAR ESTO
+        this.setupSVG3DEffects();  // ← AGREGAR
         
         if (typeof AOS !== 'undefined') {
             AOS.init({
