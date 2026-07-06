@@ -42,6 +42,129 @@ class MainApp  {
         }
     }
 
+    // ==============================================
+// SVG 3D SCROLL EFFECTS
+// ==============================================
+setupSVG3DEffects() {
+    const svgWrapper = document.getElementById('svgBackground');
+    const svg = svgWrapper?.querySelector('svg');
+    
+    if (!svgWrapper || !svg) {
+        console.warn('SVG Background no encontrado');
+        return;
+    }
+
+    // Variables para el efecto
+    let lastScrollY = 0;
+    let scrollProgress = 0;
+    let isVisible = true;
+
+    // ===== 1. PARALLAX EN EL SCROLL =====
+    window.addEventListener('scroll', () => {
+        const scrollY = window.pageYOffset;
+        const windowHeight = window.innerHeight;
+        const docHeight = document.documentElement.scrollHeight - windowHeight;
+        
+        // Progreso del scroll (0 a 1)
+        scrollProgress = Math.min(1, scrollY / (docHeight * 0.8));
+        
+        // --- Efecto 1: Movimiento vertical (parallax) ---
+        const translateY = scrollProgress * 120;
+        const scale = 1 + scrollProgress * 0.03;
+        const rotate = scrollProgress * 2;
+        
+        svg.style.transform = `
+            translateY(${translateY * 0.3}px) 
+            scale(${scale}) 
+            rotate(${rotate}deg)
+        `;
+        
+        // --- Efecto 2: Opacidad dinámica ---
+        // El SVG se vuelve más tenue al hacer scroll
+        const opacity = Math.max(0.3, 1 - scrollProgress * 0.5);
+        svg.style.opacity = opacity;
+        
+        // --- Efecto 3: Desenfoque progresivo ---
+        const blurAmount = scrollProgress * 2;
+        svg.style.filter = `blur(${blurAmount}px)`;
+        
+        // --- Efecto 4: Scroll de las capas internas ---
+        const layers = svg.querySelectorAll('g[filter], g:not([filter])');
+        layers.forEach((layer, index) => {
+            const speed = 0.1 + (index % 3) * 0.05;
+            const layerOffset = scrollProgress * 50 * speed;
+            layer.style.transform = `translateY(${layerOffset}px)`;
+        });
+        
+        // --- Efecto 5: Brillo de los nodos ---
+        const nodes = svg.querySelectorAll('#networkNode, #networkNodeMagenta, .networkNode');
+        nodes.forEach((node, i) => {
+            const delay = i * 0.02;
+            const progress = Math.max(0, Math.min(1, (scrollProgress - delay) / (1 - delay)));
+            const glowSize = 12 + progress * 20;
+            const glowOpacity = 0.3 + progress * 0.5;
+            
+            const circles = node.querySelectorAll('circle');
+            circles.forEach(circle => {
+                if (circle.getAttribute('r') && parseFloat(circle.getAttribute('r')) > 8) {
+                    // Es el anillo de glow
+                    circle.setAttribute('r', glowSize);
+                    circle.setAttribute('opacity', glowOpacity);
+                }
+            });
+        });
+        
+        // --- Efecto 6: Velocidad de pulsos ---
+        const pulses = svg.querySelectorAll('animateMotion');
+        pulses.forEach((pulse, i) => {
+            const speed = 4 + scrollProgress * 10;
+            const currentDur = parseFloat(pulse.getAttribute('dur'));
+            if (currentDur > 2) {
+                // No afectar a los pulsos que ya son rápidos
+                pulse.setAttribute('dur', Math.max(2, speed));
+            }
+        });
+
+        lastScrollY = scrollY;
+        
+    }, { passive: true });
+
+    // ===== 2. EFECTO CON EL MOUSE (parallax sutil) =====
+    document.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 2;
+        const y = (e.clientY / window.innerHeight - 0.5) * 2;
+        
+        // Movimiento sutil del SVG siguiendo el mouse
+        svg.style.transform += ` translate(${x * 5}px, ${y * 5}px)`;
+    });
+
+    // ===== 3. DETECTAR VISIBILIDAD (optimización) =====
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                isVisible = true;
+                svg.style.visibility = 'visible';
+            } else if (entry.boundingClientRect.top > window.innerHeight) {
+                // Si el SVG está muy lejos, ocultarlo para rendimiento
+                isVisible = false;
+                // No ocultamos realmente, solo reducimos opacidad
+                svg.style.opacity = '0.1';
+            }
+        });
+    }, { threshold: 0 });
+
+    observer.observe(svgWrapper);
+
+    // ===== 4. REINICIAR EFECTOS AL CAMBIAR DE TEMA =====
+    document.addEventListener('themeChanged', () => {
+        // Pequeño ajuste de opacidad según el tema
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        svg.style.opacity = isDark ? '0.7' : '0.9';
+    });
+
+    console.log('SVG 3D Scroll Effects inicializados');
+}
+
         // ==============================================
     // EXPERIENCE ANIMATIONS
     // ==============================================
