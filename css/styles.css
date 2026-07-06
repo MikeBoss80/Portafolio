@@ -1433,55 +1433,58 @@ section:nth-child(5) { animation-delay: 0.5s; }
 
 
 /* ==============================================
-   CURSOR PERSONALIZADO OPTIMIZADO
+   CURSOR PERSONALIZADO - CON Z-INDEX ALTO
    ============================================== */
 
-/* Cursor base */
 .custom-cursor {
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
+    position: fixed !important;
+    pointer-events: none !important;
+    z-index: 99999 !important;  /* ← Muy alto */
     border-radius: 50%;
     border: 2px solid #004687;
-    background: transparent;
-    transition: width 0.15s ease, height 0.15s ease, border-color 0.15s ease;
+    background: rgba(0, 70, 135, 0.1);
+    box-shadow: 0 0 10px rgba(0, 70, 135, 0.2);
+    transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    will-change: transform;
     mix-blend-mode: difference;
-    will-change: transform;
 }
 
-/* Glow del cursor */
 .custom-cursor-glow {
-    position: fixed;
-    pointer-events: none;
-    z-index: 9998;
+    position: fixed !important;
+    pointer-events: none !important;
+    z-index: 99998 !important;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(0, 70, 135, 0.12) 0%, transparent 70%);
-    transition: width 0.2s ease, height 0.2s ease;
+    background: radial-gradient(circle, rgba(0, 70, 135, 0.15) 0%, transparent 70%);
     will-change: transform;
-}
-
-/* Ocultar cursor en elementos interactivos para evitar conflicto */
-a, button, .btn, .project-card, .social-link, .filter-btn {
-    cursor: none !important;
+    transition: width 0.3s ease, height 0.3s ease;
 }
 
 /* Modo oscuro */
 [data-theme="dark"] .custom-cursor {
     border-color: #0066CC;
+    background: rgba(0, 102, 204, 0.1);
+    box-shadow: 0 0 15px rgba(0, 102, 204, 0.3);
 }
 
 [data-theme="dark"] .custom-cursor-glow {
-    background: radial-gradient(circle, rgba(0, 102, 204, 0.15) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(0, 102, 204, 0.2) 0%, transparent 70%);
 }
 
-/* Responsive: ocultar cursor en móvil */
+/* Ocultar cursor nativo en todos los elementos interactivos */
+a, button, .btn, .project-card, .social-link, .filter-btn, 
+input, textarea, select, .nav-link, .hamburger {
+    cursor: none !important;
+}
+
+/* Responsive: ocultar en móvil y mostrar cursor nativo */
 @media (max-width: 768px) {
     .custom-cursor,
     .custom-cursor-glow {
         display: none !important;
     }
     
-    a, button, .btn, .project-card, .social-link, .filter-btn {
+    a, button, .btn, .project-card, .social-link, .filter-btn,
+    input, textarea, select, .nav-link, .hamburger {
         cursor: auto !important;
     }
 }
