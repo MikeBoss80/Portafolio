@@ -1901,6 +1901,10 @@ input, textarea, select, .nav-link, .hamburger {
    SVG BACKGROUND 3D CON SCROLL
    ============================================== */
 
+/* ==============================================
+   SVG BACKGROUND 3D CON SCROLL
+   ============================================== */
+
 /* Contenedor del SVG - fijo como fondo */
 .svg-background-wrapper {
     position: fixed;
@@ -1913,13 +1917,14 @@ input, textarea, select, .nav-link, .hamburger {
     overflow: hidden;
 }
 
-/* El SVG ocupa todo el viewport */
+/* El SVG/object ocupa todo el viewport */
 .background-svg {
     width: 100%;
     height: 100%;
     display: block;
     will-change: transform, opacity;
     transition: transform 0.1s ease-out;
+    pointer-events: none;
 }
 
 /* ==============================================
