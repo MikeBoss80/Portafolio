@@ -1,7 +1,7 @@
 // ==============================================
 // GLOBAL VARIABLES AND UTILITIES
 // ==============================================
-class PortfolioApp {
+class MainApp  {
     constructor() {
         this.init();
     }
@@ -739,7 +739,7 @@ class PortfolioApp {
 // ==============================================
 // INITIALIZE APPLICATION
 // ==============================================
-const portfolioApp = new PortfolioApp();
+const portfolioApp = new MainApp ();
 
 // ==============================================
 // ADDITIONAL EVENT LISTENERS
