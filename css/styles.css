@@ -1430,3 +1430,58 @@ section:nth-child(5) { animation-delay: 0.5s; }
         transform: translateY(0);
     }
 }
+
+
+/* ==============================================
+   CURSOR PERSONALIZADO OPTIMIZADO
+   ============================================== */
+
+/* Cursor base */
+.custom-cursor {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    border-radius: 50%;
+    border: 2px solid #004687;
+    background: transparent;
+    transition: width 0.15s ease, height 0.15s ease, border-color 0.15s ease;
+    mix-blend-mode: difference;
+    will-change: transform;
+}
+
+/* Glow del cursor */
+.custom-cursor-glow {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 70, 135, 0.12) 0%, transparent 70%);
+    transition: width 0.2s ease, height 0.2s ease;
+    will-change: transform;
+}
+
+/* Ocultar cursor en elementos interactivos para evitar conflicto */
+a, button, .btn, .project-card, .social-link, .filter-btn {
+    cursor: none !important;
+}
+
+/* Modo oscuro */
+[data-theme="dark"] .custom-cursor {
+    border-color: #0066CC;
+}
+
+[data-theme="dark"] .custom-cursor-glow {
+    background: radial-gradient(circle, rgba(0, 102, 204, 0.15) 0%, transparent 70%);
+}
+
+/* Responsive: ocultar cursor en móvil */
+@media (max-width: 768px) {
+    .custom-cursor,
+    .custom-cursor-glow {
+        display: none !important;
+    }
+    
+    a, button, .btn, .project-card, .social-link, .filter-btn {
+        cursor: auto !important;
+    }
+}
