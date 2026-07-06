@@ -1,5 +1,5 @@
 // ==============================================
-// CUSTOM CURSOR - VERSIÓN RÁPIDA Y LIVIANA
+// CUSTOM CURSOR - CON FALLBACK Y DEBUG
 // ==============================================
 class CustomCursor {
     constructor() {
@@ -7,138 +7,174 @@ class CustomCursor {
         this.cursorGlow = null;
         this.mouseX = 0;
         this.mouseY = 0;
-        this.cursorX = 0;
-        this.cursorY = 0;
-        this.isHovering = false;
-        this.speed = 0.15; // ← Velocidad de seguimiento (0.1 = lento, 0.3 = rápido)
+        this.isVisible = true;
+        
+        // No ejecutar en móvil
+        if ('ontouchstart' in window || window.innerWidth < 768) {
+            console.log('Cursor desactivado en móvil');
+            return;
+        }
         
         this.init();
     }
 
     init() {
-        // Solo crear en desktop
-        if ('ontouchstart' in window) return;
+        console.log('Inicializando cursor personalizado...');
         
-        this.createCursor();
-        this.setupEvents();
-        this.animate();
-    }
-
-    createCursor() {
-        // ===== CURSOR PRINCIPAL (más pequeño y rápido) =====
+        // ===== CREAR CURSOR =====
         this.cursor = document.createElement('div');
         this.cursor.className = 'custom-cursor';
         Object.assign(this.cursor.style, {
             position: 'fixed',
-            width: '16px',              // ← Más pequeño
-            height: '16px',
+            width: '20px',
+            height: '20px',
             border: '2px solid #004687',
             borderRadius: '50%',
             pointerEvents: 'none',
-            zIndex: '9999',
+            zIndex: '99999',              // ← Z-index muy alto
             transform: 'translate(-50%, -50%)',
-            transition: 'width 0.2s ease, height 0.2s ease, border-color 0.2s ease', // ← Solo transiciones necesarias
-            willChange: 'transform'      // ← Optimiza rendimiento
+            transition: 'width 0.2s ease, height 0.2s ease, border-color 0.2s ease',
+            willChange: 'transform',
+            backgroundColor: 'rgba(0,70,135,0.1)',
+            boxShadow: '0 0 10px rgba(0,70,135,0.2)'
         });
 
-        // ===== GLOW (más pequeño y sin transiciones pesadas) =====
+        // ===== GLOW =====
         this.cursorGlow = document.createElement('div');
         this.cursorGlow.className = 'custom-cursor-glow';
         Object.assign(this.cursorGlow.style, {
             position: 'fixed',
-            width: '40px',               // ← Más pequeño
-            height: '40px',
+            width: '60px',
+            height: '60px',
             borderRadius: '50%',
             pointerEvents: 'none',
-            zIndex: '9998',
-            background: 'radial-gradient(circle, rgba(0,70,135,0.12) 0%, transparent 70%)',
+            zIndex: '99998',
+            background: 'radial-gradient(circle, rgba(0,70,135,0.15) 0%, transparent 70%)',
             transform: 'translate(-50%, -50%)',
-            opacity: '0.5',
-            willChange: 'transform'      // ← Optimiza rendimiento
+            willChange: 'transform'
         });
 
+        // Agregar al DOM
         document.body.appendChild(this.cursor);
         document.body.appendChild(this.cursorGlow);
+        
+        // Ocultar cursor nativo
         document.body.style.cursor = 'none';
-    }
+        
+        console.log('Cursor creado correctamente');
 
-    setupEvents() {
-        // ===== Evento de mouse (solo actualiza coordenadas) =====
+        // ===== EVENTOS =====
         document.addEventListener('mousemove', (e) => {
             this.mouseX = e.clientX;
             this.mouseY = e.clientY;
+            this.updateCursorPosition();
         });
 
-        // ===== Eventos hover (sin animaciones pesadas) =====
-        const interactiveElements = document.querySelectorAll(
-            'a, button, .btn, .project-card, .social-link, .filter-btn'
-        );
-        
-        interactiveElements.forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                this.isHovering = true;
-                // Cambios rápidos sin transiciones pesadas
-                this.cursor.style.width = '32px';
-                this.cursor.style.height = '32px';
-                this.cursor.style.borderColor = '#0066CC';
-                this.cursor.style.backgroundColor = 'rgba(0,70,135,0.08)';
-                
-                this.cursorGlow.style.width = '60px';
-                this.cursorGlow.style.height = '60px';
-                this.cursorGlow.style.background = 'radial-gradient(circle, rgba(0,70,135,0.2) 0%, transparent 70%)';
-            });
-            
-            el.addEventListener('mouseleave', () => {
-                this.isHovering = false;
-                this.cursor.style.width = '16px';
-                this.cursor.style.height = '16px';
-                this.cursor.style.borderColor = '#004687';
-                this.cursor.style.backgroundColor = 'transparent';
-                
-                this.cursorGlow.style.width = '40px';
-                this.cursorGlow.style.height = '40px';
-                this.cursorGlow.style.background = 'radial-gradient(circle, rgba(0,70,135,0.12) 0%, transparent 70%)';
-            });
+        // Hover effects
+        document.querySelectorAll('a, button, .btn, .project-card, .social-link, .filter-btn, input, textarea').forEach(el => {
+            el.addEventListener('mouseenter', () => this.onHover());
+            el.addEventListener('mouseleave', () => this.onLeave());
         });
 
-        // ===== Click effect (sin transiciones pesadas) =====
+        // Click effect
         document.addEventListener('mousedown', () => {
-            this.cursor.style.transform = 'translate(-50%, -50%) scale(0.7)';
+            if (this.cursor) {
+                this.cursor.style.transform = 'translate(-50%, -50%) scale(0.7)';
+            }
         });
-        
         document.addEventListener('mouseup', () => {
-            this.cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+            if (this.cursor) {
+                this.cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+            }
         });
 
-        // ===== Ocultar al salir de la página =====
+        // Ocultar al salir
         document.addEventListener('mouseleave', () => {
             this.cursor.style.display = 'none';
             this.cursorGlow.style.display = 'none';
         });
-        
         document.addEventListener('mouseenter', () => {
             this.cursor.style.display = 'block';
             this.cursorGlow.style.display = 'block';
         });
+
+        // ===== ANIMACIÓN CON RAF =====
+        this.animate();
     }
 
-    // ===== ANIMACIÓN CON REQUESTANIMATIONFRAME (más suave) =====
+    updateCursorPosition() {
+        if (this.cursor) {
+            this.cursor.style.left = this.mouseX + 'px';
+            this.cursor.style.top = this.mouseY + 'px';
+        }
+        if (this.cursorGlow) {
+            this.cursorGlow.style.left = this.mouseX + 'px';
+            this.cursorGlow.style.top = this.mouseY + 'px';
+        }
+    }
+
+    onHover() {
+        if (this.cursor) {
+            this.cursor.style.width = '40px';
+            this.cursor.style.height = '40px';
+            this.cursor.style.borderColor = '#0066CC';
+            this.cursor.style.backgroundColor = 'rgba(0,70,135,0.2)';
+            this.cursor.style.boxShadow = '0 0 20px rgba(0,70,135,0.4)';
+        }
+        if (this.cursorGlow) {
+            this.cursorGlow.style.width = '80px';
+            this.cursorGlow.style.height = '80px';
+            this.cursorGlow.style.background = 'radial-gradient(circle, rgba(0,70,135,0.25) 0%, transparent 70%)';
+        }
+    }
+
+    onLeave() {
+        if (this.cursor) {
+            this.cursor.style.width = '20px';
+            this.cursor.style.height = '20px';
+            this.cursor.style.borderColor = '#004687';
+            this.cursor.style.backgroundColor = 'rgba(0,70,135,0.1)';
+            this.cursor.style.boxShadow = '0 0 10px rgba(0,70,135,0.2)';
+        }
+        if (this.cursorGlow) {
+            this.cursorGlow.style.width = '60px';
+            this.cursorGlow.style.height = '60px';
+            this.cursorGlow.style.background = 'radial-gradient(circle, rgba(0,70,135,0.15) 0%, transparent 70%)';
+        }
+    }
+
     animate() {
-        // Calcular posición con interpolación suave
-        this.cursorX += (this.mouseX - this.cursorX) * this.speed;
-        this.cursorY += (this.mouseY - this.cursorY) * this.speed;
-
-        // Aplicar posición (usando transform para mejor rendimiento)
-        this.cursor.style.transform = `translate(${this.cursorX - 8}px, ${this.cursorY - 8}px)`;
-        this.cursorGlow.style.transform = `translate(${this.cursorX - 20}px, ${this.cursorY - 20}px)`;
-
+        if (!this.cursor) return;
         requestAnimationFrame(() => this.animate());
     }
 }
 
-// Inicializar
+// ==============================================
+// INICIALIZAR CON DEBUG
+// ==============================================
 document.addEventListener('DOMContentLoaded', () => {
-    if (!('ontouchstart' in window)) {
-        const customCursor = new CustomCursor();
-    }
+    console.log('DOM cargado, iniciando cursor...');
+    
+    // Pequeño delay para asegurar que el DOM está listo
+    setTimeout(() => {
+        try {
+            if (!('ontouchstart' in window) && window.innerWidth >= 768) {
+                const cursor = new CustomCursor();
+                console.log('Cursor iniciado:', cursor);
+            } else {
+                console.log('Cursor desactivado (móvil o touch)');
+            }
+        } catch (error) {
+            console.error('Error al iniciar cursor:', error);
+        }
+    }, 500);
 });
+
+// ===== FALLBACK: Si el cursor no se ve después de 2s =====
+setTimeout(() => {
+    const cursor = document.querySelector('.custom-cursor');
+    if (!cursor || cursor.style.display === 'none') {
+        console.warn('Cursor no visible, restaurando cursor nativo');
+        document.body.style.cursor = 'auto';
+    }
+}, 2000);
