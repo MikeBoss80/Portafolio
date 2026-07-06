@@ -28,8 +28,10 @@ class MainApp  {
         this.setupBackToTop();
         this.setupStatCounters();
         this.setupParticles();
+        this.setupExperienceAnimations();  // ← NUEVO
+        this.setupLanguageBars();          // ← NUEVO
         
-        // Initialize AOS (Animate On Scroll)
+        // Initialize AOS
         if (typeof AOS !== 'undefined') {
             AOS.init({
                 duration: 800,
@@ -38,6 +40,76 @@ class MainApp  {
                 offset: 100
             });
         }
+    }
+
+        // ==============================================
+    // EXPERIENCE ANIMATIONS
+    // ==============================================
+    setupExperienceAnimations() {
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const item = entry.target;
+                    // Agregar clase para animación
+                    item.classList.add('animate');
+                    
+                    // Animar tech-stack items con delay
+                    const techItems = item.querySelectorAll('.tech-stack span');
+                    techItems.forEach((tech, index) => {
+                        setTimeout(() => {
+                            tech.style.opacity = '1';
+                            tech.style.transform = 'translateY(0)';
+                        }, 300 + index * 50);
+                    });
+                }
+            });
+        }, {
+            threshold: 0.2,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        timelineItems.forEach(item => {
+            // Inicializar tech-stack items ocultos
+            const techItems = item.querySelectorAll('.tech-stack span');
+            techItems.forEach(tech => {
+                tech.style.opacity = '0';
+                tech.style.transform = 'translateY(10px)';
+                tech.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            });
+            
+            observer.observe(item);
+        });
+    }
+
+    // ==============================================
+    // LANGUAGE BARS ANIMATION
+    // ==============================================
+    setupLanguageBars() {
+        const languageBars = document.querySelectorAll('.language-progress');
+        
+        const animateBars = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const bar = entry.target;
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 200);
+                    
+                    observer.unobserve(bar);
+                }
+            });
+        };
+
+        const barObserver = new IntersectionObserver(animateBars, {
+            threshold: 0.5
+        });
+
+        languageBars.forEach(bar => barObserver.observe(bar));
     }
 
     // ==============================================
