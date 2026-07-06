@@ -1895,3 +1895,170 @@ input, textarea, select, .nav-link, .hamburger {
         padding: var(--spacing-lg);
     }
 }
+
+
+/* ==============================================
+   SVG BACKGROUND 3D CON SCROLL
+   ============================================== */
+
+/* Contenedor del SVG - fijo como fondo */
+.svg-background-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none; /* Permite hacer click a través del SVG */
+    overflow: hidden;
+}
+
+/* El SVG ocupa todo el viewport */
+.background-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    will-change: transform, opacity;
+    transition: transform 0.1s ease-out;
+}
+
+/* ==============================================
+   SECCIONES CON FONDO TRANSPARENTE
+   ============================================== */
+
+/* Todas las secciones tienen fondo semitransparente
+   para que se vea el SVG detrás */
+.about,
+.experience,
+.skills,
+.projects,
+.certifications,
+.languages,
+.contact {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: background var(--transition-base), backdrop-filter var(--transition-base);
+}
+
+/* Modo oscuro - fondo más oscuro y transparente */
+[data-theme="dark"] .about,
+[data-theme="dark"] .experience,
+[data-theme="dark"] .skills,
+[data-theme="dark"] .projects,
+[data-theme="dark"] .certifications,
+[data-theme="dark"] .languages,
+[data-theme="dark"] .contact {
+    background: rgba(10, 10, 20, 0.82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Hero section SIN fondo para que el SVG se vea completo */
+#home {
+    position: relative;
+    z-index: 1;
+    background: transparent !important;
+}
+
+/* ==============================================
+   TARJETAS CON GLASSMORPHISM
+   ============================================== */
+
+/* Las tarjetas tienen efecto vidrio para que
+   se vea el SVG a través de ellas */
+.timeline-content,
+.cert-card,
+.language-card,
+.skill-category,
+.project-card,
+.contact-form {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    transition: background var(--transition-base), border var(--transition-base);
+}
+
+/* Modo oscuro en tarjetas */
+[data-theme="dark"] .timeline-content,
+[data-theme="dark"] .cert-card,
+[data-theme="dark"] .language-card,
+[data-theme="dark"] .skill-category,
+[data-theme="dark"] .project-card,
+[data-theme="dark"] .contact-form {
+    background: rgba(20, 20, 40, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* ==============================================
+   RESPONSIVE
+   ============================================== */
+
+@media (max-width: 768px) {
+    /* En móvil, el SVG se ve más tenue */
+    .svg-background-wrapper {
+        opacity: 0.5;
+    }
+    
+    /* Las secciones tienen fondo más opaco en móvil
+       para mejor legibilidad */
+    .about,
+    .experience,
+    .skills,
+    .projects,
+    .certifications,
+    .languages,
+    .contact {
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+    }
+    
+    [data-theme="dark"] .about,
+    [data-theme="dark"] .experience,
+    [data-theme="dark"] .skills,
+    [data-theme="dark"] .projects,
+    [data-theme="dark"] .certifications,
+    [data-theme="dark"] .languages,
+    [data-theme="dark"] .contact {
+        background: rgba(10, 10, 20, 0.92);
+    }
+    
+    /* Tarjetas más opacas en móvil */
+    .timeline-content,
+    .cert-card,
+    .language-card,
+    .skill-category,
+    .project-card,
+    .contact-form {
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(4px);
+    }
+    
+    [data-theme="dark"] .timeline-content,
+    [data-theme="dark"] .cert-card,
+    [data-theme="dark"] .language-card,
+    [data-theme="dark"] .skill-category,
+    [data-theme="dark"] .project-card,
+    [data-theme="dark"] .contact-form {
+        background: rgba(20, 20, 40, 0.92);
+    }
+}
+
+/* Reducir animaciones si el usuario lo prefiere */
+@media (prefers-reduced-motion: reduce) {
+    .svg-background-wrapper * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .background-svg {
+        transform: none !important;
+    }
+}
