@@ -71,7 +71,7 @@ class CustomCursor {
         });
 
         // Hover effects
-        document.querySelectorAll('a, button, .btn, .project-card, .social-link, .filter-btn, input, textarea').forEach(el => {
+        document.querySelectorAll('a, button, .btn, .carousel-3d-card, .social-link, input, textarea').forEach(el => {
             el.addEventListener('mouseenter', () => this.onHover());
             el.addEventListener('mouseleave', () => this.onLeave());
         });
@@ -98,8 +98,14 @@ class CustomCursor {
             this.cursorGlow.style.display = 'block';
         });
 
-        // ===== ANIMACIÓN CON RAF =====
-        this.animate();
+        // ===== RE-EVALUAR EN RESIZE =====
+        window.addEventListener('resize', () => {
+            if (window.innerWidth < 768) {
+                if (this.cursor) this.cursor.style.display = 'none';
+                if (this.cursorGlow) this.cursorGlow.style.display = 'none';
+                document.body.style.cursor = 'auto';
+            }
+        });
     }
 
     updateCursorPosition() {
@@ -143,10 +149,6 @@ class CustomCursor {
         }
     }
 
-    animate() {
-        if (!this.cursor) return;
-        requestAnimationFrame(() => this.animate());
-    }
 }
 
 // ==============================================

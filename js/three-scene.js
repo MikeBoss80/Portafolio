@@ -1,6 +1,3 @@
-// ==============================================
-// THREE.JS 3D SCENE FOR HERO
-// ==============================================
 class ThreeScene {
     constructor() {
         this.scene = null;
@@ -15,18 +12,19 @@ class ThreeScene {
     }
 
     init() {
-        const container = document.querySelector('.hero-background');
+        if (typeof THREE === 'undefined') {
+            console.warn('⚠️ Three.js no disponible');
+            return;
+        }
+        const container = document.getElementById('threeContainer');
         if (!container) return;
 
-        // Scene setup
         this.scene = new THREE.Scene();
         this.scene.fog = new THREE.FogExp2(0x004687, 0.002);
 
-        // Camera
         this.camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
         this.camera.position.z = 5;
 
-        // Renderer
         this.renderer = new THREE.WebGLRenderer({
             alpha: true,
             antialias: true
@@ -35,24 +33,19 @@ class ThreeScene {
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.prepend(this.renderer.domElement);
 
-        // Create scene objects
         this.createObject();
         this.createParticles();
         this.createLights();
         this.createFloor();
 
-        // Mouse events
         this.setupMouseEvents();
 
-        // Start animation
         this.animate();
 
-        // Handle resize
         window.addEventListener('resize', () => this.onResize());
     }
 
     createObject() {
-        // Main 3D object - Torus Knot
         const geometry = new THREE.TorusKnotGeometry(1.2, 0.4, 128, 16);
         const material = new THREE.MeshPhysicalMaterial({
             color: 0x004687,
@@ -69,7 +62,6 @@ class ThreeScene {
         this.object = new THREE.Mesh(geometry, material);
         this.scene.add(this.object);
 
-        // Wireframe overlay
         const wireframeGeo = new THREE.TorusKnotGeometry(1.25, 0.45, 64, 8);
         const wireframeMat = new THREE.MeshBasicMaterial({
             color: 0x0066CC,
@@ -80,7 +72,6 @@ class ThreeScene {
         const wireframe = new THREE.Mesh(wireframeGeo, wireframeMat);
         this.object.add(wireframe);
 
-        // Glow ring
         const ringGeo = new THREE.TorusGeometry(1.8, 0.02, 32, 64);
         const ringMat = new THREE.MeshBasicMaterial({
             color: 0x0066CC,
@@ -91,7 +82,6 @@ class ThreeScene {
         ring.rotation.x = Math.PI / 2;
         this.object.add(ring);
 
-        // Second ring
         const ring2Geo = new THREE.TorusGeometry(1.6, 0.02, 32, 64);
         const ring2Mat = new THREE.MeshBasicMaterial({
             color: 0xCC2233,
@@ -117,7 +107,6 @@ class ThreeScene {
             positions[i + 1] = radius * Math.sin(phi) * Math.sin(theta);
             positions[i + 2] = radius * Math.cos(phi);
 
-            // Color gradient
             colors[i] = 0 + Math.random() * 0.2;
             colors[i + 1] = 0.3 + Math.random() * 0.4;
             colors[i + 2] = 0.6 + Math.random() * 0.4;
@@ -141,28 +130,23 @@ class ThreeScene {
     }
 
     createLights() {
-        // Ambient light
         const ambientLight = new THREE.AmbientLight(0x404060);
         this.scene.add(ambientLight);
 
-        // Main light
         const mainLight = new THREE.DirectionalLight(0x0066CC, 1);
         mainLight.position.set(2, 3, 4);
         this.scene.add(mainLight);
 
-        // Fill light
         const fillLight = new THREE.DirectionalLight(0xCC2233, 0.5);
         fillLight.position.set(-2, -1, 3);
         this.scene.add(fillLight);
 
-        // Back light
         const backLight = new THREE.DirectionalLight(0x004687, 0.5);
         backLight.position.set(0, 0, -5);
         this.scene.add(backLight);
     }
 
     createFloor() {
-        // Subtle grid floor
         const gridHelper = new THREE.GridHelper(10, 20, 0x0066CC, 0x004687);
         gridHelper.position.y = -2.5;
         gridHelper.material.transparent = true;
@@ -171,7 +155,7 @@ class ThreeScene {
     }
 
     setupMouseEvents() {
-        const container = this.renderer.domElement.parentElement;
+        const container = document.getElementById('threeContainer');
 
         container.addEventListener('mousemove', (e) => {
             const rect = container.getBoundingClientRect();
@@ -191,17 +175,14 @@ class ThreeScene {
     animate() {
         requestAnimationFrame(() => this.animate());
 
-        // Smooth rotation
         if (this.object) {
             this.object.rotation.x += (this.targetRotation.x - this.object.rotation.x) * 0.05;
             this.object.rotation.y += (this.targetRotation.y - this.object.rotation.y) * 0.05;
             this.object.rotation.z += 0.005;
 
-            // Floating animation
             this.object.position.y = Math.sin(Date.now() * 0.001) * 0.1;
         }
 
-        // Rotate particles
         if (this.particles) {
             this.particles.rotation.x += 0.0002;
             this.particles.rotation.y += 0.0005;
@@ -211,7 +192,7 @@ class ThreeScene {
     }
 
     onResize() {
-        const container = this.renderer.domElement.parentElement;
+        const container = document.getElementById('threeContainer');
         const width = container.clientWidth;
         const height = container.clientHeight;
 
@@ -221,7 +202,6 @@ class ThreeScene {
     }
 }
 
-// Initialize Three.js scene
 document.addEventListener('DOMContentLoaded', () => {
     const threeScene = new ThreeScene();
 });

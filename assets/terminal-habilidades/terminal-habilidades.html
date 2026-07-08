@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terminal — Portafolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     TERMINAL — tokens
+     ============================================================ */
+  :root{
+    --fondo-pagina: #10151a;
+    --term-bg:      #0b0f14;
+    --term-borde:   #1d2833;
+    --barra:        #161e27;
+    --texto:        #c9d6df;
+    --texto-tenue:  #5c6f80;
+    --verde:        #4ec98f;   /* prompt bash */
+    --cian:         #56b6c2;   /* prompt mysql */
+    --amarillo:     #e5c07b;   /* strings / keywords */
+    --naranja:      #d19a66;
+    --rojo:         #e06c75;
+    --morado:       #c678dd;
+
+    --f-mono:'JetBrains Mono', monospace;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  body{
+    background:
+      radial-gradient(ellipse at 50% 0%, #182029 0%, var(--fondo-pagina) 70%);
+    min-height:100vh;
+    font-family:var(--f-mono);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:48px 16px 80px;
+    color:var(--texto);
+  }
+
+  .titulo-seccion{
+    font-size:.7rem;
+    letter-spacing:.4em;
+    text-transform:uppercase;
+    color:var(--texto-tenue);
+    margin-bottom:24px;
+  }
+
+  /* ============================================================
+     VENTANA DE TERMINAL
+     ============================================================ */
+  .terminal{
+    width:100%;
+    max-width:860px;
+    background:var(--term-bg);
+    border:1px solid var(--term-borde);
+    border-radius:10px;
+    box-shadow:
+      0 30px 60px rgba(0,0,0,.55),
+      0 0 0 1px rgba(255,255,255,.02) inset;
+    overflow:hidden;
+  }
+
+  /* barra de título */
+  .term-barra{
+    background:var(--barra);
+    padding:10px 14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    border-bottom:1px solid var(--term-borde);
+    user-select:none;
+  }
+  .term-barra .punto{ width:12px; height:12px; border-radius:50%; }
+  .punto.r{ background:#ff5f56; } .punto.a{ background:#ffbd2e; } .punto.v{ background:#27c93f; }
+  .term-barra .ruta{
+    margin-left:10px;
+    font-size:.72rem;
+    color:var(--texto-tenue);
+  }
+
+  /* cuerpo con scroll */
+  .term-cuerpo{
+    padding:16px 18px 20px;
+    height:460px;
+    overflow-y:auto;
+    font-size:.82rem;
+    line-height:1.55;
+    scroll-behavior:smooth;
+  }
+  .term-cuerpo::-webkit-scrollbar{ width:8px; }
+  .term-cuerpo::-webkit-scrollbar-thumb{ background:#243140; border-radius:4px; }
+  .term-cuerpo::-webkit-scrollbar-track{ background:transparent; }
+
+  .term-cuerpo .linea{ white-space:pre-wrap; word-break:break-word; }
+
+  /* colores semánticos */
+  .c-prompt { color:var(--verde); }
+  .c-mysql  { color:var(--cian); }
+  .c-cmd    { color:var(--texto); }
+  .c-tenue  { color:var(--texto-tenue); }
+  .c-kw     { color:var(--morado); }     /* SELECT, FROM, WHERE */
+  .c-str    { color:var(--amarillo); }
+  .c-num    { color:var(--naranja); }
+  .c-ok     { color:var(--verde); }
+  .c-err    { color:var(--rojo); }
+  .c-tabla  { color:var(--texto); }
+  .c-borde-t{ color:var(--texto-tenue); }
+
+  /* línea de entrada activa */
+  .entrada{
+    display:flex;
+    align-items:baseline;
+    gap:0;
+  }
+  .entrada .prompt{ white-space:pre; }
+  .entrada input{
+    flex:1;
+    background:transparent;
+    border:none;
+    outline:none;
+    color:var(--texto);
+    font:inherit;
+    caret-color:transparent; /* usamos cursor propio */
+    min-width:40px;
+  }
+  /* cursor de bloque parpadeante */
+  .cursor{
+    display:inline-block;
+    width:9px;
+    height:1.1em;
+    background:var(--texto);
+    vertical-align:text-bottom;
+    animation:parpadeo 1.05s steps(1) infinite;
+  }
+  @keyframes parpadeo{ 50%{ opacity:0; } }
+
+  /* ============================================================
+     CHIPS DE COMANDOS SUGERIDOS
+     ============================================================ */
+  .sugerencias{
+    max-width:860px;
+    width:100%;
+    margin-top:18px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    justify-content:center;
+  }
+  .sugerencias .hint{
+    width:100%;
+    text-align:center;
+    font-size:.66rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--texto-tenue);
+    margin-bottom:2px;
+  }
+  .chip{
+    font-family:var(--f-mono);
+    font-size:.72rem;
+    color:var(--texto);
+    background:#141c25;
+    border:1px solid var(--term-borde);
+    border-radius:6px;
+    padding:6px 12px;
+    cursor:pointer;
+    transition:border-color .2s, background .2s, transform .15s;
+  }
+  .chip:hover{
+    border-color:var(--cian);
+    background:#18222d;
+    transform:translateY(-1px);
+  }
+  .chip:focus-visible{ outline:2px solid var(--cian); outline-offset:2px; }
+
+  @media (prefers-reduced-motion: reduce){
+    .cursor{ animation:none; }
+    .chip{ transition:none; }
+  }
+  @media (max-width:560px){
+    .term-cuerpo{ font-size:.68rem; height:420px; padding:12px; }
+  }
+</style>
+</head>
+<body>
+
+<p class="titulo-seccion">// habilidades — modo interactivo</p>
+
+<div class="terminal" id="terminal">
+  <div class="term-barra">
+    <span class="punto r"></span><span class="punto a"></span><span class="punto v"></span>
+    <span class="ruta" id="rutaBarra">visitante@portafolio: ~</span>
+  </div>
+  <div class="term-cuerpo" id="cuerpo" aria-live="polite"></div>
+</div>
+
+<div class="sugerencias" id="sugerencias">
+  <p class="hint">Haz click en un comando o escribe el tuyo</p>
+</div>
+
+<script>
+/* =====================================================================
+   DATOS — edita aquí tus cursos y habilidades
+   ===================================================================== */
+const DB = {
+  cursos: {
+    columnas: ['id', 'nombre', 'institucion', 'anio', 'area'],
+    filas: [
+      [1, 'Foundational C# with Microsoft',                        'Microsoft',    2024, 'Desarrollo'],
+      [2, 'Curso de Fundamentos de .NET',                          'Platzi',       2024, 'Backend'],
+      [3, 'Business Intelligence: Utilidad y Areas de Oportunidad','BI Institute', 2024, 'Datos'],
+      [4, 'Administrador de Bases de Datos 2024',                  'SENA',         2024, 'Datos'],
+      [5, 'Excel Analytics + AI y Python',                         'Analytics Co', 2024, 'Analitica'],
+      [6, 'Ingles Avanzado B1.2',                                  'Academia',     2024, 'Idiomas'],
+    ]
+  },
+  habilidades: {
+    columnas: ['id', 'habilidad', 'categoria', 'nivel', 'anios_exp'],
+    filas: [
+      [1, 'SQL / MySQL',            'Bases de Datos', 'avanzado',   2],
+      [2, 'C#',                     'Desarrollo',     'intermedio', 1],
+      [3, '.NET',                   'Backend',        'intermedio', 1],
+      [4, 'Python',                 'Analitica',      'intermedio', 1],
+      [5, 'Excel Avanzado',         'Analitica',      'avanzado',   3],
+      [6, 'Business Intelligence',  'Datos',          'intermedio', 1],
+      [7, 'Administracion de BD',   'Bases de Datos', 'avanzado',   2],
+      [8, 'Ingles',                 'Idiomas',        'B1.2',       4],
+    ]
+  }
+};
+
+const ARCHIVOS = {
+  'sobre_mi.txt':
+`Administrador de Bases de Datos & Desarrollador
+------------------------------------------------
+Apasionado por los datos, el backend y la mejora
+continua. Actualmente profundizando en el
+ecosistema .NET y analitica con Python.
+
+Contacto: tu-email@ejemplo.com`,
+  'habilidades': null,   // directorio
+  'cursos.sql':
+`-- Prueba estas consultas dentro de mysql:
+SELECT * FROM cursos;
+SELECT * FROM habilidades WHERE nivel = 'avanzado';
+SELECT nombre, anio FROM cursos WHERE area = 'Datos';
+SHOW TABLES;
+DESCRIBE habilidades;`
+};
+
+/* =====================================================================
+   NÚCLEO DE LA TERMINAL
+   ===================================================================== */
+const cuerpo   = document.getElementById('cuerpo');
+const rutaBarra= document.getElementById('rutaBarra');
+const sugerencias = document.getElementById('sugerencias');
+
+let modo = 'bash';                 // 'bash' | 'mysql'
+let historial = [];
+let idxHist = -1;
+let entradaActual = null;
+
+const PROMPT_BASH  = () => `<span class="c-prompt">visitante@portafolio</span><span class="c-tenue">:~$ </span>`;
+const PROMPT_MYSQL = () => `<span class="c-mysql">mysql&gt; </span>`;
+
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function linea(html, clase=''){
+  const div = document.createElement('div');
+  div.className = 'linea ' + clase;
+  div.innerHTML = html;
+  cuerpo.appendChild(div);
+  cuerpo.scrollTop = cuerpo.scrollHeight;
+  return div;
+}
+
+/* imprime líneas una a una con retraso (animación fila por fila) */
+function imprimirSecuencia(lineas, retraso=55){
+  return new Promise(resolve => {
+    let i = 0;
+    (function paso(){
+      if (i >= lineas.length){ resolve(); return; }
+      linea(lineas[i].html, lineas[i].clase || '');
+      i++;
+      setTimeout(paso, lineas[i-1].rapida ? 0 : retraso);
+    })();
+  });
+}
+
+/* crea la línea de entrada activa */
+function nuevaEntrada(){
+  if (entradaActual) entradaActual.remove();
+
+  const cont = document.createElement('div');
+  cont.className = 'linea entrada';
+  cont.innerHTML = `<span class="prompt">${modo === 'bash' ? PROMPT_BASH() : PROMPT_MYSQL()}</span>`;
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.autocomplete = 'off';
+  input.spellcheck = false;
+  input.setAttribute('aria-label','Entrada de terminal');
+
+  const espejo = document.createElement('span');   // texto visible
+  const cursor = document.createElement('span');
+  cursor.className = 'cursor';
+
+  cont.appendChild(espejo);
+  cont.appendChild(cursor);
+  cont.appendChild(input);
+  cuerpo.appendChild(cont);
+  entradaActual = cont;
+
+  input.addEventListener('input', () => { espejo.textContent = input.value; });
+
+  input.addEventListener('keydown', async (e) => {
+    if (e.key === 'Enter'){
+      const cmd = input.value;
+      cont.remove();
+      entradaActual = null;
+      linea(`${modo==='bash'?PROMPT_BASH():PROMPT_MYSQL()}<span class="c-cmd">${resaltar(cmd)}</span>`);
+      if (cmd.trim()){
+        historial.push(cmd);
+        idxHist = historial.length;
+        await ejecutar(cmd.trim());
+      }
+      nuevaEntrada();
+    }
+    else if (e.key === 'ArrowUp'){
+      e.preventDefault();
+      if (idxHist > 0){ idxHist--; input.value = historial[idxHist]; espejo.textContent = input.value; }
+    }
+    else if (e.key === 'ArrowDown'){
+      e.preventDefault();
+      if (idxHist < historial.length - 1){ idxHist++; input.value = historial[idxHist]; }
+      else { idxHist = historial.length; input.value = ''; }
+      espejo.textContent = input.value;
+    }
+    else if (e.key === 'Tab'){
+      e.preventDefault();
+      const t = autocompletar(input.value);
+      if (t){ input.value = t; espejo.textContent = t; }
+    }
+  });
+
+  cuerpo.scrollTop = cuerpo.scrollHeight;
+  input.focus();
+}
+
+/* click en cualquier parte de la terminal enfoca el input */
+document.getElementById('terminal').addEventListener('click', () => {
+  const inp = entradaActual?.querySelector('input');
+  if (inp && !window.getSelection().toString()) inp.focus();
+});
+
+/* resaltado simple de sintaxis para el eco del comando */
+function resaltar(cmd){
+  let h = esc(cmd);
+  h = h.replace(/\b(SELECT|FROM|WHERE|ORDER BY|LIMIT|SHOW|TABLES|DESCRIBE|DESC|LIKE|AND|OR|USE|EXIT|QUIT)\b/gi,
+                m => `<span class="c-kw">${m}</span>`);
+  h = h.replace(/'([^']*)'/g, `<span class="c-str">'$1'</span>`);
+  h = h.replace(/\b(\d+)\b/g, `<span class="c-num">$1</span>`);
+  return h;
+}
+
+function autocompletar(parcial){
+  const p = parcial.toLowerCase();
+  const cands = modo === 'bash'
+    ? ['help','ls','ls habilidades/','cat sobre_mi.txt','cat cursos.sql','whoami','mysql -u visitante -p','clear']
+    : ['SELECT * FROM cursos;','SELECT * FROM habilidades;',"SELECT * FROM habilidades WHERE nivel = 'avanzado';",'SHOW TABLES;','DESCRIBE cursos;','DESCRIBE habilidades;','exit'];
+  return cands.find(c => c.toLowerCase().startsWith(p) && p.length > 0) || null;
+}
+
+/* =====================================================================
+   COMANDOS BASH
+   ===================================================================== */
+async function ejecutar(cmd){
+  if (modo === 'mysql') return ejecutarSQL(cmd);
+
+  const [base, ...args] = cmd.split(/\s+/);
+
+  switch (base.toLowerCase()){
+    case 'help':
+      await imprimirSecuencia([
+        {html:`<span class="c-tenue">Comandos disponibles:</span>`},
+        {html:`  <span class="c-ok">ls</span>              lista archivos del portafolio`},
+        {html:`  <span class="c-ok">cat</span> &lt;archivo&gt;   muestra el contenido de un archivo`},
+        {html:`  <span class="c-ok">whoami</span>          quien esta detras de este portafolio`},
+        {html:`  <span class="c-ok">mysql</span>           conecta a la base de datos de habilidades`},
+        {html:`  <span class="c-ok">clear</span>           limpia la pantalla`},
+      ], 30);
+      break;
+
+    case 'ls': {
+      const objetivo = (args[0]||'').replace(/\/$/,'');
+      if (objetivo === 'habilidades'){
+        await imprimirSecuencia([
+          {html:`<span class="c-cian" style="color:var(--cian)">sql.txt  csharp.txt  dotnet.txt  python.txt  excel.txt  bi.txt  ingles.txt</span>`},
+          {html:`<span class="c-tenue">tip: el detalle completo vive en la base de datos → escribe</span> <span class="c-ok">mysql</span>`},
+        ], 40);
+      } else {
+        await imprimirSecuencia([
+          {html:`<span style="color:var(--cian)">habilidades/</span>  sobre_mi.txt  cursos.sql`},
+        ], 0);
+      }
+      break;
+    }
+
+    case 'cat': {
+      const archivo = args[0];
+      if (!archivo){
+        linea(`<span class="c-err">cat: falta el nombre del archivo</span>`);
+      } else if (archivo.replace(/\/$/,'') === 'habilidades'){
+        linea(`<span class="c-err">cat: habilidades/: es un directorio</span>`);
+      } else if (ARCHIVOS[archivo] !== undefined && ARCHIVOS[archivo] !== null){
+        const lineas = ARCHIVOS[archivo].split('\n').map(l => ({html: esc(l) || '&nbsp;'}));
+        await imprimirSecuencia(lineas, 25);
+      } else if (/^(sql|csharp|dotnet|python|excel|bi|ingles)\.txt$/.test(archivo) || /^habilidades\//.test(archivo)){
+        linea(`<span class="c-tenue">Ese detalle esta en la base de datos. Escribe</span> <span class="c-ok">mysql</span> <span class="c-tenue">y consulta la tabla</span> <span class="c-str">habilidades</span><span class="c-tenue">.</span>`);
+      } else {
+        linea(`<span class="c-err">cat: ${esc(archivo)}: No existe el archivo o directorio</span>`);
+      }
+      break;
+    }
+
+    case 'whoami':
+      await imprimirSecuencia([
+        {html:`<span class="c-ok">Administrador de Bases de Datos & Desarrollador</span>`},
+        {html:`Enfocado en datos, backend .NET y analitica con Python.`},
+        {html:`<span class="c-tenue">(mas info: </span><span class="c-ok">cat sobre_mi.txt</span><span class="c-tenue">)</span>`},
+      ], 40);
+      break;
+
+    case 'mysql':
+      await imprimirSecuencia([
+        {html:`<span class="c-tenue">Enter password: </span>********`, rapida:false},
+        {html:`&nbsp;`},
+        {html:`Welcome to the MySQL monitor.  Commands end with ; or \\g.`},
+        {html:`Your MySQL connection id is 8`},
+        {html:`Server version: <span class="c-num">8.0.36</span> MySQL Community Server - GPL`},
+        {html:`&nbsp;`},
+        {html:`Database changed to <span class="c-str">portafolio</span>. Type <span class="c-ok">SHOW TABLES;</span> to explore.`},
+      ], 120);
+      modo = 'mysql';
+      rutaBarra.textContent = 'mysql — portafolio@localhost:3306';
+      pintarChips();
+      break;
+
+    case 'clear':
+      cuerpo.innerHTML = '';
+      break;
+
+    case 'exit':
+      linea(`<span class="c-tenue">Ya estas en bash. Prueba</span> <span class="c-ok">mysql</span> <span class="c-tenue">para entrar a la base de datos.</span>`);
+      break;
+
+    default:
+      linea(`<span class="c-err">${esc(base)}: comando no encontrado.</span> <span class="c-tenue">Escribe</span> <span class="c-ok">help</span>`);
+  }
+}
+
+/* =====================================================================
+   MINI MOTOR SQL
+   Soporta:
+     SHOW TABLES;
+     DESCRIBE tabla;  /  DESC tabla;
+     SELECT cols FROM tabla [WHERE col = 'v' | col LIKE '%v%'] [ORDER BY col [DESC]] [LIMIT n];
+     exit / quit
+   ===================================================================== */
+async function ejecutarSQL(raw){
+  const sql = raw.replace(/;+\s*$/,'').trim();
+  const t0 = performance.now();
+
+  if (/^(exit|quit|\\q)$/i.test(sql)){
+    linea(`Bye`);
+    modo = 'bash';
+    rutaBarra.textContent = 'visitante@portafolio: ~';
+    pintarChips();
+    return;
+  }
+
+  if (/^show\s+tables$/i.test(sql)){
+    await renderTabla(['Tables_in_portafolio'], Object.keys(DB).map(t => [t]), t0);
+    return;
+  }
+
+  let m = sql.match(/^(describe|desc)\s+(\w+)$/i);
+  if (m){
+    const tabla = DB[m[2].toLowerCase()];
+    if (!tabla) return errorSQL(`Table 'portafolio.${m[2]}' doesn't exist`);
+    const filas = tabla.columnas.map((c,i) => [
+      c,
+      i === 0 ? 'int' : (c === 'anio' || c === 'anios_exp' ? 'int' : 'varchar(120)'),
+      i === 0 ? 'NO' : 'YES',
+      i === 0 ? 'PRI' : '',
+      'NULL',
+      i === 0 ? 'auto_increment' : ''
+    ]);
+    await renderTabla(['Field','Type','Null','Key','Default','Extra'], filas, t0);
+    return;
+  }
+
+  m = sql.match(/^select\s+(.+?)\s+from\s+(\w+)(?:\s+where\s+(.+?))?(?:\s+order\s+by\s+(\w+)(\s+desc)?)?(?:\s+limit\s+(\d+))?$/i);
+  if (m){
+    const [, colsRaw, tablaNombre, whereRaw, ordenCol, ordenDesc, limitRaw] = m;
+    const tabla = DB[tablaNombre.toLowerCase()];
+    if (!tabla) return errorSQL(`Table 'portafolio.${tablaNombre}' doesn't exist`);
+
+    /* columnas */
+    let cols, idxs;
+    if (colsRaw.trim() === '*'){
+      cols = tabla.columnas;
+      idxs = cols.map((_,i)=>i);
+    } else {
+      cols = colsRaw.split(',').map(c=>c.trim());
+      idxs = cols.map(c => tabla.columnas.indexOf(c));
+      const mala = cols[idxs.indexOf(-1)];
+      if (idxs.includes(-1)) return errorSQL(`Unknown column '${mala}' in 'field list'`);
+    }
+
+    /* filtro WHERE (col = 'v'  |  col LIKE '%v%'  |  col > n) */
+    let filas = [...tabla.filas];
+    if (whereRaw){
+      const w = whereRaw.match(/^(\w+)\s*(=|like|>|<|>=|<=)\s*'?([^']*)'?$/i);
+      if (!w) return errorSQL(`You have an error in your SQL syntax near '${whereRaw}'`);
+      const [, wc, op, valRaw] = w;
+      const ci = tabla.columnas.indexOf(wc.toLowerCase()) !== -1
+               ? tabla.columnas.indexOf(wc.toLowerCase())
+               : tabla.columnas.indexOf(wc);
+      if (ci === -1) return errorSQL(`Unknown column '${wc}' in 'where clause'`);
+      filas = filas.filter(f => {
+        const celda = String(f[ci]).toLowerCase();
+        const val = valRaw.toLowerCase();
+        switch (op.toLowerCase()){
+          case '=':    return celda === val;
+          case 'like': return celda.includes(val.replace(/%/g,''));
+          case '>':    return Number(f[ci]) >  Number(valRaw);
+          case '<':    return Number(f[ci]) <  Number(valRaw);
+          case '>=':   return Number(f[ci]) >= Number(valRaw);
+          case '<=':   return Number(f[ci]) <= Number(valRaw);
+        }
+      });
+    }
+
+    /* ORDER BY */
+    if (ordenCol){
+      const oi = tabla.columnas.indexOf(ordenCol.toLowerCase());
+      if (oi === -1) return errorSQL(`Unknown column '${ordenCol}' in 'order clause'`);
+      filas.sort((a,b) => (a[oi] > b[oi] ? 1 : -1) * (ordenDesc ? -1 : 1));
+    }
+
+    /* LIMIT */
+    if (limitRaw) filas = filas.slice(0, Number(limitRaw));
+
+    if (filas.length === 0){
+      const dur = ((performance.now()-t0)/1000).toFixed(2);
+      linea(`<span class="c-tenue">Empty set (${dur} sec)</span>`);
+      return;
+    }
+    await renderTabla(cols, filas.map(f => idxs.map(i => f[i])), t0);
+    return;
+  }
+
+  errorSQL(`You have an error in your SQL syntax; check the manual near '${esc(sql.slice(0,30))}'`);
+}
+
+function errorSQL(msg){
+  linea(`<span class="c-err">ERROR 1064 (42000): ${msg}</span>`);
+}
+
+/* Tabla ASCII estilo cliente MySQL, animada fila por fila */
+async function renderTabla(cols, filas, t0){
+  const anchos = cols.map((c,i) =>
+    Math.max(String(c).length, ...filas.map(f => String(f[i]).length))
+  );
+  const sep = '+' + anchos.map(a => '-'.repeat(a+2)).join('+') + '+';
+  const fila = arr => '|' + arr.map((v,i) => ' ' + String(v).padEnd(anchos[i]) + ' ').join('|') + '|';
+
+  const lineas = [
+    {html:`<span class="c-borde-t">${sep}</span>`, rapida:true},
+    {html:`<span class="c-tabla">${esc(fila(cols))}</span>`, rapida:true},
+    {html:`<span class="c-borde-t">${sep}</span>`, rapida:true},
+    ...filas.map(f => ({html:`<span class="c-tabla">${esc(fila(f))}</span>`})),
+    {html:`<span class="c-borde-t">${sep}</span>`, rapida:true},
+  ];
+  await imprimirSecuencia(lineas, 90);
+  const dur = ((performance.now()-t0)/1000).toFixed(2);
+  linea(`<span class="c-ok">${filas.length} row${filas.length!==1?'s':''} in set</span> <span class="c-tenue">(${dur} sec)</span>`);
+}
+
+/* =====================================================================
+   CHIPS DE SUGERENCIA (cambian según el modo)
+   ===================================================================== */
+const CHIPS = {
+  bash: ['help','ls','ls habilidades/','cat sobre_mi.txt','cat cursos.sql','whoami','mysql -u visitante -p','clear'],
+  mysql: ['SHOW TABLES;','SELECT * FROM cursos;',"SELECT * FROM habilidades WHERE nivel = 'avanzado';","SELECT nombre, anio FROM cursos WHERE area = 'Datos';",'DESCRIBE habilidades;','SELECT * FROM cursos ORDER BY nombre LIMIT 3;','exit']
+};
+
+function pintarChips(){
+  sugerencias.querySelectorAll('.chip').forEach(c => c.remove());
+  CHIPS[modo].forEach(cmd => {
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.textContent = cmd;
+    b.addEventListener('click', () => escribirComoHumano(cmd));
+    sugerencias.appendChild(b);
+  });
+}
+
+/* al hacer click en un chip, "teclea" el comando y lo ejecuta */
+function escribirComoHumano(cmd){
+  const input = entradaActual?.querySelector('input');
+  const espejo = entradaActual?.querySelector('span:nth-child(2)');
+  if (!input) return;
+  input.focus();
+  input.value = '';
+  espejo.textContent = '';
+  let i = 0;
+  (function tic(){
+    if (i < cmd.length){
+      input.value += cmd[i];
+      espejo.textContent = input.value;
+      i++;
+      setTimeout(tic, 28 + Math.random()*40);
+    } else {
+      input.dispatchEvent(new KeyboardEvent('keydown', {key:'Enter', bubbles:true}));
+    }
+  })();
+}
+
+/* =====================================================================
+   ARRANQUE — mensaje de bienvenida
+   ===================================================================== */
+(async function init(){
+  await imprimirSecuencia([
+    {html:`<span class="c-tenue">Último acceso: hoy, desde tu navegador</span>`},
+    {html:`&nbsp;`},
+    {html:`Bienvenido/a a mi portafolio interactivo.`},
+    {html:`Mis habilidades no estan en una lista: estan en una <span class="c-str">base de datos</span>.`},
+    {html:`&nbsp;`},
+    {html:`Escribe <span class="c-ok">help</span> para ver los comandos, o <span class="c-ok">mysql</span> para consultarlas directamente.`},
+    {html:`&nbsp;`},
+  ], 90);
+  pintarChips();
+  nuevaEntrada();
+})();
+</script>
+
+</body>
+</html>

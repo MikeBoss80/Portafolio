@@ -15,6 +15,7 @@ class GSAPAnimations {
         this.aboutAnimations();
         this.skillsAnimations();
         this.projectsAnimations();
+        this.formacionAnimations();
         this.contactAnimations();
         this.navbarAnimations();
         this.parallaxEffects();
@@ -27,6 +28,9 @@ class GSAPAnimations {
         const heroImage = document.querySelector('.hero-image');
 
         if (!heroTitle) return;
+
+        // Ensure hero section is visible before animating children
+        gsap.set('.hero', { opacity: 1 });
 
         // Create timeline
         const tl = gsap.timeline({
@@ -135,7 +139,7 @@ class GSAPAnimations {
                 scrollTrigger: {
                     trigger: stat,
                     start: 'top 80%',
-                    toggleActions: 'play none none reverse'
+                    toggleActions: 'play none none none'
                 },
                 y: 30,
                 opacity: 0,
@@ -150,7 +154,7 @@ class GSAPAnimations {
             scrollTrigger: {
                 trigger: '.about-text',
                 start: 'top 80%',
-                toggleActions: 'play none none reverse'
+                toggleActions: 'play none none none'
             },
             y: 50,
             opacity: 0,
@@ -167,7 +171,7 @@ class GSAPAnimations {
                 scrollTrigger: {
                     trigger: category,
                     start: 'top 85%',
-                    toggleActions: 'play none none reverse'
+                    toggleActions: 'play none none none'
                 },
                 y: 50,
                 opacity: 0,
@@ -185,7 +189,7 @@ class GSAPAnimations {
                     scrollTrigger: {
                         trigger: bar,
                         start: 'top 90%',
-                        toggleActions: 'play none none reverse'
+                        toggleActions: 'play none none none'
                     },
                     width: '0%',
                     duration: 1.2,
@@ -200,48 +204,33 @@ class GSAPAnimations {
     }
 
     projectsAnimations() {
-        const projectCards = document.querySelectorAll('.project-card');
-        
-        projectCards.forEach((card, i) => {
-            gsap.from(card, {
+        gsap.from('.carousel-3d', {
+            scrollTrigger: {
+                trigger: '#projects',
+                start: 'top 85%',
+                toggleActions: 'play none none none'
+            },
+            y: 60,
+            opacity: 0,
+            duration: 0.8,
+            ease: 'power3.out'
+        });
+    }
+
+    formacionAnimations() {
+        const folioItems = document.querySelectorAll('.folio-item');
+        folioItems.forEach((item, i) => {
+            gsap.from(item, {
                 scrollTrigger: {
-                    trigger: card,
+                    trigger: '#formacion',
                     start: 'top 85%',
-                    toggleActions: 'play none none reverse'
+                    toggleActions: 'play none none none'
                 },
-                y: 60,
+                y: 40,
                 opacity: 0,
-                duration: 0.8,
+                duration: 0.6,
                 delay: i * 0.1,
                 ease: 'power3.out'
-            });
-
-            // 3D hover effect
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = (e.clientX - rect.left) / rect.width;
-                const y = (e.clientY - rect.top) / rect.height;
-
-                const rotateX = (y - 0.5) * 10;
-                const rotateY = (x - 0.5) * 10;
-
-                gsap.to(card, {
-                    rotateX: rotateX,
-                    rotateY: rotateY,
-                    z: 20,
-                    duration: 0.4,
-                    ease: 'power2.out'
-                });
-            });
-
-            card.addEventListener('mouseleave', () => {
-                gsap.to(card, {
-                    rotateX: 0,
-                    rotateY: 0,
-                    z: 0,
-                    duration: 0.6,
-                    ease: 'power2.out'
-                });
             });
         });
     }
@@ -254,7 +243,7 @@ class GSAPAnimations {
                 scrollTrigger: {
                     trigger: item,
                     start: 'top 85%',
-                    toggleActions: 'play none none reverse'
+                    toggleActions: 'play none none none'
                 },
                 x: -50,
                 opacity: 0,
@@ -269,7 +258,7 @@ class GSAPAnimations {
             scrollTrigger: {
                 trigger: '.contact-form',
                 start: 'top 85%',
-                toggleActions: 'play none none reverse'
+                toggleActions: 'play none none none'
             },
             x: 50,
             opacity: 0,
@@ -291,7 +280,6 @@ class GSAPAnimations {
     }
 
     parallaxEffects() {
-        // Multi-layer parallax
         const hero = document.querySelector('.hero');
         if (!hero) return;
 
@@ -307,7 +295,6 @@ class GSAPAnimations {
             opacity: 0.3
         });
 
-        // Floating elements parallax
         document.querySelectorAll('.floating-element').forEach((el, i) => {
             gsap.to(el, {
                 scrollTrigger: {
@@ -320,6 +307,24 @@ class GSAPAnimations {
                 rotation: 20 + i * 10
             });
         });
+
+        // ===== 3D SCENE "SUBMERGING" EFFECT =====
+        const threeContainer = document.getElementById('threeContainer');
+        if (threeContainer) {
+            gsap.to(threeContainer, {
+                scrollTrigger: {
+                    trigger: '#about',
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: 1.2,
+                    invalidateOnRefresh: true
+                },
+                opacity: 0.15,
+                scale: 0.7,
+                yPercent: 30,
+                ease: 'power2.inOut'
+            });
+        }
     }
 }
 

@@ -25,12 +25,10 @@ class MainApp {
         this.setupMobileMenu();
         this.setupScrollEffects();
         this.setupAnimations();
-        this.setupSkillBars();
-        this.setupProjectFilters();
+        this.setupCarousel();
         this.setupContactForm();
         this.setupBackToTop();
         this.setupStatCounters();
-        this.setupParticles();
         this.setupExperienceAnimations();
         this.setupLanguageBars();
         this.setupSVG3DEffects();
@@ -91,10 +89,13 @@ class MainApp {
         let currentOpacity = 0.9;
         let targetTranslate = 0;
         let currentTranslate = 0;
+        let mouseX = 0;
+        let mouseY = 0;
+        let currentMouseX = 0;
+        let currentMouseY = 0;
 
-        // ===== 1. PARALLAX EN EL SCROLL (OPTIMIZADO CON RAF) =====
+        // ===== 1. PARALLAX + MOUSE (UNIFICADO EN UN SOLO RAF) =====
         const updateSVG = () => {
-            // --- Efecto 1: Movimiento vertical (parallax) ---
             const translateY = scrollProgress * 80;
             const scale = 1 + scrollProgress * 0.02;
             const rotate = scrollProgress * 1.5;
@@ -103,11 +104,18 @@ class MainApp {
             currentOpacity += (targetOpacity - currentOpacity) * 0.05;
             currentTranslate += (targetTranslate - currentTranslate) * 0.05;
             
-            svg.style.transform = `
-                translateY(${currentTranslate}px) 
-                scale(${scale}) 
-                rotate(${rotate}deg)
-            `;
+            // Suavizado del mouse
+            currentMouseX += (mouseX - currentMouseX) * 0.05;
+            currentMouseY += (mouseY - currentMouseY) * 0.05;
+            
+            let transform = `translateY(${currentTranslate}px) scale(${scale}) rotate(${rotate}deg)`;
+            
+            if (scrollProgress > 0.1) {
+                const intensity = Math.min(1, scrollProgress * 2);
+                transform += ` translate(${currentMouseX * 3 * intensity}px, ${currentMouseY * 3 * intensity}px)`;
+            }
+            
+            svg.style.transform = transform;
             
             // Opacidad dinámica (aparece gradualmente)
             svg.style.opacity = Math.min(0.9, currentOpacity);
@@ -180,33 +188,14 @@ class MainApp {
             
         }, { passive: true });
 
-        // ===== 3. INICIAR ANIMACIÓN CON RAF =====
-        updateSVG();
-
-        // ===== 4. EFECTO CON EL MOUSE (OPTIMIZADO) =====
-        let mouseX = 0;
-        let mouseY = 0;
-        let currentMouseX = 0;
-        let currentMouseY = 0;
-
+        // ===== 3. MOUSE LISTENER =====
         document.addEventListener('mousemove', (e) => {
             mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
             mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
         });
 
-        // Suavizado del mouse con RAF
-        const updateMouse = () => {
-            currentMouseX += (mouseX - currentMouseX) * 0.05;
-            currentMouseY += (mouseY - currentMouseY) * 0.05;
-            
-            if (scrollProgress > 0.1) {
-                const intensity = Math.min(1, scrollProgress * 2);
-                svg.style.transform += ` translate(${currentMouseX * 3 * intensity}px, ${currentMouseY * 3 * intensity}px)`;
-            }
-            
-            requestAnimationFrame(updateMouse);
-        };
-        updateMouse();
+        // ===== 4. INICIAR ANIMACIÓN CON RAF =====
+        updateSVG();
 
         // ===== 5. REINICIAR EFECTOS AL CAMBIAR DE TEMA =====
         document.addEventListener('themeChanged', () => {
@@ -508,71 +497,12 @@ class MainApp {
     // ==============================================
     // SKILL BARS ANIMATION
     // ==============================================
-    setupSkillBars() {
-        const skillBars = document.querySelectorAll('.skill-bar');
-        
-        const animateSkillBars = (entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const skillBar = entry.target;
-                    const percentage = skillBar.getAttribute('data-percentage');
-                    
-                    setTimeout(() => {
-                        skillBar.style.width = percentage + '%';
-                    }, 200);
-                    
-                    observer.unobserve(skillBar);
-                }
-            });
-        };
-
-        const skillObserver = new IntersectionObserver(animateSkillBars, {
-            threshold: 0.5
-        });
-
-        skillBars.forEach(bar => skillObserver.observe(bar));
-    }
-
     // ==============================================
-    // PROJECT FILTERS
+    // 3D CAROUSEL
     // ==============================================
-    setupProjectFilters() {
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        const projectCards = document.querySelectorAll('.project-card');
-        
-        if (!filterButtons.length || !projectCards.length) return;
-
-        filterButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const filter = button.getAttribute('data-filter');
-                
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                
-                this.filterProjects(projectCards, filter);
-            });
-        });
-    }
-
-    filterProjects(projectCards, filter) {
-        projectCards.forEach((card, index) => {
-            const category = card.getAttribute('data-category');
-            const shouldShow = filter === 'all' || category === filter;
-            
-            if (shouldShow) {
-                card.style.display = 'block';
-                setTimeout(() => {
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 100);
-            } else {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                setTimeout(() => {
-                    card.style.display = 'none';
-                }, 300);
-            }
-        });
+    setupCarousel() {
+        if (typeof Carousel3D === 'undefined' || !document.getElementById('carouselStage')) return;
+        this.carousel = new Carousel3D();
     }
 
     // ==============================================
@@ -814,43 +744,6 @@ class MainApp {
     }
 
     // ==============================================
-    // PARTICLE ANIMATION
-    // ==============================================
-    setupParticles() {
-        const particlesContainer = document.querySelector('.hero-particles');
-        if (!particlesContainer) return;
-
-        for (let i = 0; i < 50; i++) {
-            this.createParticle(particlesContainer);
-        }
-    }
-
-    createParticle(container) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        
-        const size = Math.random() * 4 + 2;
-        const x = Math.random() * 100;
-        const y = Math.random() * 100;
-        const duration = Math.random() * 20 + 10;
-        const delay = Math.random() * 5;
-
-        Object.assign(particle.style, {
-            position: 'absolute',
-            width: `${size}px`,
-            height: `${size}px`,
-            backgroundColor: '#667eea',
-            borderRadius: '50%',
-            left: `${x}%`,
-            top: `${y}%`,
-            opacity: '0.1',
-            animation: `particleFloat ${duration}s linear infinite ${delay}s`
-        });
-
-        container.appendChild(particle);
-    }
-
-    // ==============================================
     // ANIMATIONS SETUP
     // ==============================================
     setupAnimations() {
@@ -934,17 +827,13 @@ const portfolioApp = new MainApp();
 // ADDITIONAL EVENT LISTENERS
 // ==============================================
 
-window.addEventListener('scroll', portfolioApp.throttle(() => {}, 16), { passive: true });
-
 window.addEventListener('resize', portfolioApp.debounce(() => {
     if (window.innerWidth > 768) {
         portfolioApp.closeMobileMenu();
     }
 }, 250));
 
-document.addEventListener('visibilitychange', () => {
-    document.body.classList.toggle('page-hidden', document.hidden);
-});
+
 
 // ==============================================
 // CONSOLE WELCOME MESSAGE
