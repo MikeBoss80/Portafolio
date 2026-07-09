@@ -30,7 +30,7 @@
    ============================================================ */
 .terminal-wrapper {
     width: 100%;
-    max-width: 860px;
+    max-width: min(860px, calc(100vw - 32px));
     margin: var(--spacing-lg) auto 0;
     padding: 0;
 }
