@@ -24,6 +24,9 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Terminal Habilidades CSS -->
+    <link rel="stylesheet" href="assets/terminal-habilidades/terminal.css">
 </head>
 
 <body>
@@ -342,118 +345,18 @@
                 <p class="section-subtitle">Tecnologías y herramientas que domino</p>
             </div>
 
-            <div class="skills-content">
-                <div class="skills-categories">
-                    <!-- Frontend Skills -->
-                    <div class="skill-category" data-aos="fade-up" data-aos-delay="100">
-                        <div class="category-header">
-                            <i class="fas fa-laptop-code"></i>
-                            <h3>Frontend</h3>
-                        </div>
-                        <div class="skills-grid">
-                            <div class="skill-item">
-                                <div class="skill-icon">
-                                    <i class="fab fa-html5"></i>
-                                </div>
-                                <span class="skill-name">HTML5</span>
-                                <div class="skill-level">
-                                    <div class="skill-bar" data-percentage="90"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-icon">
-                                    <i class="fab fa-css3-alt"></i>
-                                </div>
-                                <span class="skill-name">CSS3</span>
-                                <div class="skill-level">
-                                    <div class="skill-bar" data-percentage="90"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-icon">
-                                    <i class="fab fa-js-square"></i>
-                                </div>
-                                <span class="skill-name">JavaScript</span>
-                                <div class="skill-level">
-                                    <div class="skill-bar" data-percentage="80"></div>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Terminal interactiva de habilidades -->
+            <div class="terminal-wrapper">
+                <p class="titulo-seccion">// habilidades — modo interactivo</p>
+                <div class="terminal" id="terminal">
+                    <div class="term-barra">
+                        <span class="punto r"></span><span class="punto a"></span><span class="punto v"></span>
+                        <span class="ruta" id="rutaBarra">visitante@portafolio: ~</span>
                     </div>
-
-                    <!-- Backend Skills -->
-                    <div class="skill-category" data-aos="fade-up" data-aos-delay="200">
-                        <div class="category-header">
-                            <i class="fas fa-server"></i>
-                            <h3>Backend</h3>
-                        </div>
-                        <div class="skills-grid">
-                            <div class="skill-item">
-                                <div class="skill-icon">
-                                    <i class="fab fa-python"></i>
-                                </div>
-                                <span class="skill-name">Python</span>
-                                <div class="skill-level">
-                                    <div class="skill-bar" data-percentage="75"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-icon">
-                                    <i class="fas fa-database"></i>
-                                </div>
-                                <span class="skill-name">MongoDB</span>
-                                <div class="skill-level">
-                                    <div class="skill-bar" data-percentage="60"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-icon">
-                                    <i class="fas fa-database"></i>
-                                </div>
-                                <span class="skill-name">MySQL</span>
-                                <div class="skill-level">
-                                    <div class="skill-bar" data-percentage="70"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tools Skills -->
-                    <div class="skill-category" data-aos="fade-up" data-aos-delay="300">
-                        <div class="category-header">
-                            <i class="fas fa-tools"></i>
-                            <h3>Herramientas</h3>
-                        </div>
-                        <div class="skills-grid">
-                            <div class="skill-item">
-                                <div class="skill-icon">
-                                    <i class="fab fa-git-alt"></i>
-                                </div>
-                                <span class="skill-name">Git</span>
-                                <div class="skill-level">
-                                    <div class="skill-bar" data-percentage="90"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-icon">
-                                    <i class="fas fa-code-branch"></i>
-                                </div>
-                                <span class="skill-name">GitHub</span>
-                                <div class="skill-level">
-                                    <div class="skill-bar" data-percentage="88"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-icon">
-                                    <i class="fab fa-docker"></i>
-                                </div>
-                                <span class="skill-name">Docker</span>
-                                <div class="skill-level">
-                                    <div class="skill-bar" data-percentage="70"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="term-cuerpo" id="cuerpo" aria-live="polite"></div>
+                </div>
+                <div class="sugerencias" id="sugerencias">
+                    <p class="hint">Haz click en un comando o escribe el tuyo</p>
                 </div>
             </div>
         </div>
@@ -828,6 +731,9 @@
     <script src="js/carousel-3d.js"></script>
     <script src="js/custom-cursor.js"></script>
     <script src="js/script.js"></script>
+
+    <!-- Terminal Habilidades JS -->
+    <script src="assets/terminal-habilidades/terminal.js"></script>
 
 <script>
     document.querySelectorAll('.folio-item').forEach(folio => {
