@@ -5,17 +5,19 @@ gsap.registerPlugin(ScrollTrigger);
 
 export class GSAPAnimations {
   constructor() {
+    this.isMobile = window.innerWidth < 768;
     this.init();
   }
 
   init() {
     this.heroAnimations();
+    this.navbarAnimations();
+    if (this.isMobile) return;
     this.aboutAnimations();
     this.skillsAnimations();
     this.projectsAnimations();
     this.formacionAnimations();
     this.contactAnimations();
-    this.navbarAnimations();
     this.parallaxEffects();
   }
 

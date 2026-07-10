@@ -10,7 +10,15 @@ export class ScrollReveal {
     const elements = document.querySelectorAll("[data-aos], [data-animate]");
     if (!elements.length) return;
 
+    const isMobile = window.innerWidth < 768;
+
     elements.forEach((el) => {
+      if (isMobile) {
+        el.style.opacity = 1;
+        el.style.transform = "translate(0,0)";
+        return;
+      }
+
       const type = el.getAttribute("data-aos") || "fade-up";
       const delay = parseInt(el.getAttribute("data-aos-delay")) || 0;
       const anim = ANIMATIONS[type] || ANIMATIONS["fade-up"];
@@ -20,6 +28,8 @@ export class ScrollReveal {
         transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms`,
       });
     });
+
+    if (isMobile) return;
 
     this.observer = new IntersectionObserver(
       (entries) => {
