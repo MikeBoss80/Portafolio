@@ -1,29 +1,6 @@
 /* ============================================================
-   TERMINAL — tokens
+   TERMINAL — tokens (definidos en styles/tokens.css)
    ============================================================ */
-:root {
-    --fondo-pagina: #10151a;
-    --term-bg: #0b0f14;
-    --term-borde: #1d2833;
-    --barra: #161e27;
-    --texto: #c9d6df;
-    --texto-tenue: #5c6f80;
-    --verde: #4ec98f;
-    --cian: #56b6c2;
-    --amarillo: #e5c07b;
-    --naranja: #d19a66;
-    --rojo: #e06c75;
-    --morado: #c678dd;
-
-    --f-mono: 'JetBrains Mono', monospace;
-}
-
-[data-theme="light"] {
-    --fondo-pagina: #1a1f25;
-    --term-bg: #0f1318;
-    --term-borde: #2a3540;
-    --barra: #1a222b;
-}
 
 /* ============================================================
    CONTENEDOR

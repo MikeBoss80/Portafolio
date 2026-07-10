@@ -4,8 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Miguel Bolivar | Desarrollador Back-end</title>
-    <meta name="description" content="Portafolio profesional de desarrollador full stack especializado en tecnologías modernas">
+    <title>Miguel Bolívar | Desarrollador Back-end & Full Stack</title>
+    <meta name="description" content="Portafolio profesional de Miguel Ángel Bolívar. Desarrollador Back-end y Full Stack especializado en Python, FastAPI, Django, JavaScript y tecnologías modernas.">
+    <meta name="keywords" content="desarrollador back-end, full stack, python, fastapi, django, javascript, portafolio, colombia">
+    <meta name="author" content="Miguel Ángel Bolívar">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://miike.dev/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Miguel Bolívar | Desarrollador Back-end & Full Stack">
+    <meta property="og:description" content="Portafolio profesional de Miguel Ángel Bolívar. Especializado en Python, FastAPI, Django y desarrollo web moderno.">
+    <meta property="og:url" content="https://miike.dev/">
+    <meta property="og:image" content="https://miike.dev/assets/images/og-image.webp">
+    <meta property="og:locale" content="es_CO">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Miguel Bolívar | Desarrollador Back-end & Full Stack">
+    <meta name="twitter:description" content="Portafolio profesional de desarrollador full stack especializado en tecnologías modernas.">
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
@@ -19,10 +36,8 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- AOS Animation Library -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
     <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles/tokens.css">
     <link rel="stylesheet" href="css/styles.css">
 
     <!-- Terminal Habilidades CSS -->
@@ -206,7 +221,7 @@
 
                 <div class="about-image" data-aos="fade-left">
                     <div class="image-wrapper">
-                        <img src="assets/images/about-image.webp" alt="Foto profesional" class="about-photo">
+                        <img src="assets/images/about-image.webp" alt="Miguel Ángel Bolívar - Desarrollador Full Stack" class="about-photo" loading="lazy">
                         <div class="image-overlay"></div>
                     </div>
                 </div>
@@ -375,6 +390,16 @@
 
             <div class="carousel-3d" id="carousel3d">
                 <div class="carousel-3d-stage" id="carouselStage"></div>
+                
+                <div class="carousel-3d-controls">
+                    <button class="carousel-btn carousel-prev" aria-label="Anterior">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="carousel-dots" id="carouselDots"></div>
+                    <button class="carousel-btn carousel-next" aria-label="Siguiente">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
 
                 <div class="carousel-3d-info" id="carouselInfo">
                     <h3 class="carousel-info-title"></h3>
@@ -390,15 +415,6 @@
                     </div>
                 </div>
 
-                <div class="carousel-3d-controls">
-                    <button class="carousel-btn carousel-prev" aria-label="Anterior">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <div class="carousel-dots" id="carouselDots"></div>
-                    <button class="carousel-btn carousel-next" aria-label="Siguiente">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
             </div>
         </div>
     </section>
@@ -605,41 +621,7 @@
                 <p class="section-subtitle">¿Tienes un proyecto en mente? Hablemos</p>
             </div>
 
-            <div class="contact-content">
-                <div class="contact-card" data-aos="fade-up">
-                    <div class="contact-card-header">
-                        <i class="fas fa-paper-plane"></i>
-                        <h3>Trabajemos juntos</h3>
-                        <p>Estoy abierto a oportunidades freelance, tiempo completo o proyectos de datos.</p>
-                    </div>
-
-                    <div class="contact-card-body">
-                        <a href="mailto:miguel.bolivar3000@gmail.com" class="contact-btn">
-                            <i class="fas fa-envelope"></i>
-                            miguel.bolivar3000@gmail.com
-                        </a>
-                        <a href="tel:+573207685504" class="contact-btn contact-btn--outline">
-                            <i class="fas fa-phone"></i>
-                            +57 320 7685504
-                        </a>
-                    </div>
-
-                    <div class="contact-card-footer">
-                        <span class="contact-label">Encuéntrame en</span>
-                        <div class="social-links">
-                            <a href="https://www.linkedin.com/in/miguel-angel-bolivar-621620345/" class="social-link" aria-label="LinkedIn" target="_blank">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                            <a href="https://github.com/MikeBoss80" class="social-link" aria-label="GitHub" target="_blank">
-                                <i class="fab fa-github"></i>
-                            </a>
-                            <a href="#" class="social-link" aria-label="Twitter" target="_blank">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="contact-content"></div>
         </div>
     </section>
     
@@ -672,43 +654,11 @@
     <!-- SCRIPTS -->
     <!-- ============================================== -->
 
-    <!-- 1. Librerías externas -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script type="module" src="src/main.js"></script>
 
-    <!-- 2. Tus scripts (en orden) -->
-    <script src="js/three-scene.js"></script>
-    <script src="js/courses-data.js"></script>
-    <script src="js/gsap-animations.js"></script>
-    <script src="js/carousel-3d.js"></script>
-    <script src="js/custom-cursor.js"></script>
-    <script src="js/script.js"></script>
 
-    <!-- Terminal Habilidades JS -->
-    <script src="assets/terminal-habilidades/terminal.js"></script>
 
-<script>
-    document.querySelectorAll('.folio-item').forEach(folio => {
-        folio.addEventListener('click', () => {
-            const expanded = folio.classList.toggle('expanded');
-            folio.setAttribute('aria-expanded', expanded);
-            document.querySelectorAll('.folio-item.expanded').forEach(other => {
-                if (other !== folio) {
-                    other.classList.remove('expanded');
-                    other.setAttribute('aria-expanded', 'false');
-                }
-            });
-        });
-        folio.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                folio.click();
-            }
-        });
-    });
-</script>
+
 
 </body>
 
