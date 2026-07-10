@@ -36,6 +36,16 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Import map para soportar carga directa en navegador y evitar fallos por módulos bare -->
+    <script type="importmap">
+    {
+        "imports": {
+            "gsap": "https://esm.sh/gsap@3.15.0",
+            "gsap/ScrollTrigger": "https://esm.sh/gsap@3.15.0/ScrollTrigger"
+        }
+    }
+    </script>
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles/tokens.css">
     <link rel="stylesheet" href="css/styles.css">
