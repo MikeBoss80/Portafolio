@@ -1,3 +1,4 @@
+import gsap from "gsap";
 import { projects } from "../data/projects.js";
 
 export class Carousel3D {
@@ -77,7 +78,6 @@ export class Carousel3D {
   }
 
   positionCards(duration = 0.6) {
-    if (typeof gsap === "undefined") return;
     this.cards.forEach((card, i) => {
       const pos = this.getPosition(i);
       gsap.to(card, {
