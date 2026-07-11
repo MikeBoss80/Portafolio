@@ -59,9 +59,10 @@ export class Carousel3D {
     const absIdx = Math.abs(idx);
     const sign = idx >= 0 ? 1 : -1;
 
-    const xStep = 260;
-    const zStep = 120;
-    const yStep = 8;
+    const w = window.innerWidth;
+    const xStep = w < 480 ? 140 : w < 768 ? 160 : w < 900 ? 200 : 260;
+    const zStep = w < 480 ? 60 : w < 768 ? 80 : w < 900 ? 100 : 120;
+    const yStep = w < 480 ? 4 : w < 768 ? 5 : w < 900 ? 6 : 8;
 
     const scale = Math.max(1 - absIdx * 0.11, 0.35);
     const opacity = Math.max(0.12, 1 - absIdx * 0.14);

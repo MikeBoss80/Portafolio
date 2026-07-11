@@ -1,5 +1,5 @@
 import { ThemeService } from "./services/ThemeService.js";
-import { ScrollService } from "./services/ScrollService.js";
+import { ScrollSpy } from "./services/ScrollSpy.js";
 import { NotificationService } from "./services/NotificationService.js";
 import { Navbar } from "./components/Navbar.js";
 import { Hero } from "./components/Hero.js";
@@ -17,39 +17,14 @@ import { GSAPAnimations } from "./effects/GSAPAnimations.js";
 import { CursorFX } from "./effects/CursorFX.js";
 import { SVGScene } from "./effects/SVGScene.js";
 import { ScrollReveal } from "./effects/ScrollReveal.js";
+import "../styles/effects.css";
 
 class App {
   constructor() {
     this.services = {};
     this.components = {};
     this.effects = {};
-    this.injectParticleStyles();
     this.init();
-  }
-
-  injectParticleStyles() {
-    if (document.getElementById("particle-animation-css")) return;
-    const style = document.createElement("style");
-    style.id = "particle-animation-css";
-    style.textContent = `
-      @keyframes particleFloat {
-        0% { transform: translateY(0px) rotate(0deg); opacity: 0; }
-        10% { opacity: 0.1; }
-        90% { opacity: 0.1; }
-        100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
-      }
-      .notification-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 10px;
-      }
-      .notification-close {
-        background: none; border: none; color: white;
-        font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px;
-      }
-    `;
-    document.head.appendChild(style);
   }
 
   init() {
@@ -63,7 +38,7 @@ class App {
   boot() {
     this.services.notify = new NotificationService();
     this.services.theme = new ThemeService();
-    this.services.scroll = new ScrollService();
+    this.services.scroll = new ScrollSpy();
 
     this.components.navbar = new Navbar();
     this.components.hero = new Hero();
