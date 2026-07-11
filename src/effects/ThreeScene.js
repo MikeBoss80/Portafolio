@@ -13,10 +13,14 @@ export class ThreeScene {
     const container = document.getElementById("threeContainer");
     if (!container) return;
     this.container = container;
-    import("three").then((THREE) => {
-      this.THREE = THREE;
-      this.init();
-    });
+    import("three")
+      .then((THREE) => {
+        this.THREE = THREE;
+        this.init();
+      })
+      .catch(() => {
+        console.warn("⚠️ Three.js no pudo cargarse");
+      });
   }
 
   init() {
