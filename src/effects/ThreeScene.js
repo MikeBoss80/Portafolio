@@ -10,6 +10,8 @@ export class ThreeScene {
     this.animId = null;
     this.THREE = null;
 
+    if (window.innerWidth < 768) return;
+
     const container = document.getElementById("threeContainer");
     if (!container) return;
     this.container = container;

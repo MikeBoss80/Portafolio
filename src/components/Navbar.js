@@ -1,5 +1,3 @@
-import { profile } from "../data/profile.js";
-
 export class Navbar {
   constructor() {
     this.container = document.getElementById("navbar");

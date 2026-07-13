@@ -1,5 +1,3 @@
-import { profile } from "../data/profile.js";
-
 export class About {
   constructor() {
     this.statNumbers = document.querySelectorAll(".stat-number");

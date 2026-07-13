@@ -3,57 +3,22 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export class GSAPAnimations {
+export class ScrollAnimations {
   constructor() {
-    this.isMobile = window.innerWidth < 768;
+    if (window.innerWidth < 768) return;
     this.init();
   }
 
   init() {
-    this.heroAnimations();
-    this.navbarAnimations();
-    if (this.isMobile) return;
-    this.aboutAnimations();
-    this.skillsAnimations();
-    this.projectsAnimations();
-    this.formacionAnimations();
-    this.contactAnimations();
-    this.parallaxEffects();
+    this.about();
+    this.skills();
+    this.projects();
+    this.formacion();
+    this.contact();
+    this.parallax();
   }
 
-  heroAnimations() {
-    const heroTitle = document.querySelector(".hero-title");
-    const heroSubtitle = document.querySelector(".hero-subtitle");
-    const heroButtons = document.querySelector(".hero-buttons");
-    const heroImage = document.querySelector(".hero-image");
-
-    if (!heroTitle) return;
-
-    gsap.set(".hero", { opacity: 1 });
-
-    const tl = gsap.timeline({ defaults: { ease: "power4.out", duration: 1.2 } });
-
-    tl.from(heroTitle, { y: 100, opacity: 0, duration: 1.5 })
-      .from(heroSubtitle, { y: 50, opacity: 0, duration: 1 }, "-=0.5")
-      .from(heroButtons, { y: 30, opacity: 0, duration: 0.8 }, "-=0.5")
-      .from(heroImage, { x: 100, opacity: 0, rotation: 10, duration: 1.2 }, "-=1");
-
-    document.querySelectorAll(".floating-element").forEach((el, i) => {
-      gsap.to(el, {
-        y: -20,
-        duration: 2 + i,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        delay: i * 0.5,
-      });
-    });
-  }
-
-  aboutAnimations() {
-    const aboutSection = document.querySelector(".about");
-    if (!aboutSection) return;
-
+  about() {
     gsap.utils.toArray(".stat-item").forEach((stat, i) => {
       gsap.from(stat, {
         scrollTrigger: { trigger: stat, start: "top 80%", toggleActions: "play none none none" },
@@ -74,7 +39,7 @@ export class GSAPAnimations {
     });
   }
 
-  skillsAnimations() {
+  skills() {
     document.querySelectorAll(".skill-category").forEach((category, i) => {
       gsap.from(category, {
         scrollTrigger: { trigger: category, start: "top 85%", toggleActions: "play none none none" },
@@ -101,7 +66,7 @@ export class GSAPAnimations {
     });
   }
 
-  projectsAnimations() {
+  projects() {
     gsap.from(".carousel-3d", {
       scrollTrigger: { trigger: "#projects", start: "top 85%", toggleActions: "play none none none" },
       y: 60,
@@ -111,7 +76,7 @@ export class GSAPAnimations {
     });
   }
 
-  formacionAnimations() {
+  formacion() {
     document.querySelectorAll(".folio-item").forEach((item, i) => {
       gsap.from(item, {
         scrollTrigger: { trigger: "#formacion", start: "top 85%", toggleActions: "play none none none" },
@@ -124,7 +89,7 @@ export class GSAPAnimations {
     });
   }
 
-  contactAnimations() {
+  contact() {
     document.querySelectorAll(".contact-item").forEach((item, i) => {
       gsap.from(item, {
         scrollTrigger: { trigger: item, start: "top 85%", toggleActions: "play none none none" },
@@ -145,18 +110,7 @@ export class GSAPAnimations {
     });
   }
 
-  navbarAnimations() {
-    gsap.from(".nav-item", {
-      y: -20,
-      opacity: 0,
-      duration: 0.6,
-      stagger: 0.1,
-      delay: 0.5,
-      ease: "power3.out",
-    });
-  }
-
-  parallaxEffects() {
+  parallax() {
     const hero = document.querySelector(".hero");
     if (!hero) return;
 
@@ -165,14 +119,6 @@ export class GSAPAnimations {
       y: 100,
       scale: 1.1,
       opacity: 0.3,
-    });
-
-    document.querySelectorAll(".floating-element").forEach((el, i) => {
-      gsap.to(el, {
-        scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: 1 },
-        y: 50 + i * 30,
-        rotation: 20 + i * 10,
-      });
     });
 
     const threeContainer = document.getElementById("threeContainer");
