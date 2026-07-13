@@ -11,10 +11,4 @@ export const social = [
     icon: "fab fa-github",
     label: "GitHub",
   },
-  {
-    name: "Twitter",
-    url: "#",
-    icon: "fab fa-twitter",
-    label: "Twitter",
-  },
 ];

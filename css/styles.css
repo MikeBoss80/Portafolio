@@ -181,6 +181,13 @@ body {
     align-items: center;
 }
 
+.nav-favicon {
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+    display: block;
+}
+
 .logo-dot {
     color: var(--primary-color);
 }
