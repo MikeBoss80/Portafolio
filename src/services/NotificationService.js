@@ -12,31 +12,10 @@ export class NotificationService {
       </div>
     `;
 
-    Object.assign(el.style, {
-      position: "fixed",
-      top: "20px",
-      right: "20px",
-      padding: "16px 20px",
-      borderRadius: "8px",
-      color: "white",
-      fontWeight: "500",
-      zIndex: "9999",
-      minWidth: "300px",
-      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-      transform: "translateX(100%)",
-      transition: "transform 0.3s ease-in-out",
-      backgroundColor:
-        type === "success"
-          ? "#10b981"
-          : type === "error"
-            ? "#ef4444"
-            : "#3b82f6",
-    });
-
     document.body.appendChild(el);
-    setTimeout(() => {
-      el.style.transform = "translateX(0)";
-    }, 100);
+    requestAnimationFrame(() => {
+      el.classList.add("notification-visible");
+    });
 
     const closeBtn = el.querySelector(".notification-close");
     closeBtn.addEventListener("click", () => this.remove(el));
@@ -45,7 +24,7 @@ export class NotificationService {
   }
 
   remove(el) {
-    el.style.transform = "translateX(100%)";
+    el.classList.remove("notification-visible");
     setTimeout(() => {
       if (el.parentNode) el.parentNode.removeChild(el);
     }, 300);

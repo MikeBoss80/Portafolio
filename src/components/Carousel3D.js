@@ -39,7 +39,7 @@ export class Carousel3D {
       card.className = "carousel-3d-card";
       card.dataset.index = i;
       card.innerHTML = `
-        <img class="card-image" src="${item.image}" alt="${item.title}" loading="lazy">
+        <img class="card-image" data-src="${item.image}" alt="${item.title}">
         <div class="card-overlay">
           <h4>${item.title}</h4>
           <span class="card-category">${item.category}</span>
@@ -49,6 +49,22 @@ export class Carousel3D {
       this.stage.appendChild(card);
       this.cards.push(card);
     });
+    this.loadImages();
+  }
+
+  loadImages() {
+    const range = 2;
+    for (let i = -range; i <= range; i++) {
+      const idx = (this.activeIndex + i + this.total) % this.total;
+      const card = this.cards[idx];
+      if (!card) continue;
+      const img = card.querySelector("img[data-src]");
+      if (img && !img.src) {
+        img.src = img.getAttribute("data-src");
+        img.loading = "lazy";
+        img.removeAttribute("data-src");
+      }
+    }
   }
 
   getPosition(index) {
@@ -135,6 +151,7 @@ export class Carousel3D {
     this.activeIndex = index;
     this.positionCards();
     this.updateInfo();
+    this.loadImages();
     this.restartAutoRotate();
   }
 

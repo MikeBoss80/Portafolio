@@ -181,6 +181,13 @@ body {
     align-items: center;
 }
 
+.nav-favicon {
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+    display: block;
+}
+
 .logo-dot {
     color: var(--primary-color);
 }
@@ -285,9 +292,10 @@ body {
 
 .hero-content .container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: var(--spacing-4xl);
     align-items: center;
+    max-width: 800px;
 }
 
 .hero-title {
@@ -2360,6 +2368,57 @@ section {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--primary-dark);
+}
+
+/* ==============================================
+   NOTIFICACIONES TOAST
+   ============================================== */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    z-index: 9999;
+    min-width: 300px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateX(120%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.notification-visible {
+    transform: translateX(0);
+}
+
+.notification-success {
+    background-color: #10b981;
+}
+
+.notification-error {
+    background-color: #ef4444;
+}
+
+.notification-info {
+    background-color: #3b82f6;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
 }
 
 /* ==============================================

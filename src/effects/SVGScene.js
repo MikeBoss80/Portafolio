@@ -4,6 +4,8 @@ export class SVGScene {
     this.svgObject = document.getElementById("backgroundSVG");
     if (!this.svgWrapper || !this.svgObject) return;
 
+    if (window.innerWidth < 768) return;
+
     this.rafId = null;
     this.scrollProgress = 0;
     this.targetOpacity = 0.9;

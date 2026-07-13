@@ -13,7 +13,8 @@ import { Contact } from "./components/Contact.js";
 import { BackToTop } from "./components/BackToTop.js";
 import { Loader } from "./components/Loader.js";
 import { ThreeScene } from "./effects/ThreeScene.js";
-import { GSAPAnimations } from "./effects/GSAPAnimations.js";
+import { EntryAnimations } from "./effects/EntryAnimations.js";
+import { ScrollAnimations } from "./effects/ScrollAnimations.js";
 import { CursorFX } from "./effects/CursorFX.js";
 import { SVGScene } from "./effects/SVGScene.js";
 import { ScrollReveal } from "./effects/ScrollReveal.js";
@@ -54,9 +55,13 @@ class App {
     this.components.scrollReveal = new ScrollReveal();
 
     this.effects.threeScene = new ThreeScene();
-    this.effects.gsap = new GSAPAnimations();
+    this.effects.entry = new EntryAnimations();
+    this.effects.scroll = new ScrollAnimations();
     this.effects.cursor = new CursorFX();
     this.effects.svgScene = new SVGScene();
+
+    const yearEl = document.getElementById("currentYear");
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
 
     console.log("✅ Portafolio inicializado correctamente");
   }
