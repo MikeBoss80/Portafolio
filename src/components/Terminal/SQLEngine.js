@@ -35,11 +35,11 @@ export class SQLEngine {
     return {
       type: "table",
       cols: ["Field", "Type", "Null", "Key", "Default", "Extra"],
-      rows: t.columnas.map((c, i) => [
+      rows: t.columns.map((c, i) => [
         c,
         i === 0
           ? "int"
-          : c === "anio" || c === "anios_exp"
+          : c === "year" || c === "years_exp"
             ? "int"
             : "varchar(120)",
         i === 0 ? "NO" : "YES",
@@ -64,17 +64,17 @@ export class SQLEngine {
 
     let cols, idxs;
     if (colsRaw.trim() === "*") {
-      cols = t.columnas;
+      cols = t.columns;
       idxs = cols.map((_, i) => i);
     } else {
       cols = colsRaw.split(",").map((c) => c.trim());
-      idxs = cols.map((c) => t.columnas.indexOf(c));
+      idxs = cols.map((c) => t.columns.indexOf(c));
       const bad = cols[idxs.indexOf(-1)];
       if (idxs.includes(-1))
         return { type: "error", msg: `Unknown column '${bad}'` };
     }
 
-    let rows = t.filas.slice();
+    let rows = t.rows.slice();
 
     if (whereRaw) {
       const w = whereRaw.match(
@@ -85,7 +85,7 @@ export class SQLEngine {
       const wc = w[1];
       const op = w[2];
       const val = w[3];
-      const ci = t.columnas.indexOf(wc.toLowerCase());
+      const ci = t.columns.indexOf(wc.toLowerCase());
       if (ci === -1)
         return { type: "error", msg: `Unknown column '${wc}'` };
       rows = rows.filter((f) => {
@@ -111,7 +111,7 @@ export class SQLEngine {
     }
 
     if (orderCol) {
-      const oi = t.columnas.indexOf(orderCol.toLowerCase());
+      const oi = t.columns.indexOf(orderCol.toLowerCase());
       if (oi === -1)
         return { type: "error", msg: `Unknown column '${orderCol}'` };
       rows.sort((a, b) =>

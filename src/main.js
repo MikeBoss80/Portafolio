@@ -16,6 +16,7 @@ import { ThreeScene } from "./effects/ThreeScene.js";
 import { EntryAnimations } from "./effects/EntryAnimations.js";
 import { ScrollAnimations } from "./effects/ScrollAnimations.js";
 import { CursorFX } from "./effects/CursorFX.js";
+import "../assets/terminal-habilidades/terminal.css";
 import { SVGScene } from "./effects/SVGScene.js";
 import { ScrollReveal } from "./effects/ScrollReveal.js";
 import "../styles/effects.css";

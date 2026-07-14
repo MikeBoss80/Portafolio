@@ -1,7 +1,7 @@
 import { SQLEngine } from "./SQLEngine.js";
-import { habilidades, cursosDB } from "../../data/skills.js";
+import { skills, coursesDB } from "../../data/skills.js";
 
-const DB = { cursos: cursosDB, habilidades };
+const DB = { courses: coursesDB, skills };
 
 const SERVER = {
   user: "miguel",
@@ -12,48 +12,48 @@ const SERVER = {
 };
 
 const ARCHIVOS = {
-  "sobre_mi.txt": `╔══════════════════════════════════════════╗
+  "about_me.txt": `╔══════════════════════════════════════════╗
 ║        Miguel Angel — Backend Dev        ║
 ║        Data & BI Enthusiast              ║
 ╚══════════════════════════════════════════╝
 
-Soy un desarrollador backend apasionado por
-los datos, la automatizacion y el analisis.
-Profundizando en el ecosistema .NET, Power BI
-y analitica con Python.
+Backend developer passionate about
+data, automation and analytics.
+Diving deep into .NET ecosystem, Power BI
+and Python analytics.
 
-Sistemas: Windows 11 / Ubuntu 22.04 (WSL)
-Shell favorita: PowerShell + bash
+Systems: Windows 11 / Ubuntu 22.04 (WSL)
+Favorite shell: PowerShell + bash
 Editor: VS Code
-Servidor: MiikeBoss80 (192.168.1.100)
+Server: MiikeBoss80 (192.168.1.100)
 
-Contacto: miguel@ejemplo.com`,
-  "cursos.sql": `-- Prueba estas consultas dentro de mysql:
-SELECT * FROM cursos;
-SELECT * FROM habilidades WHERE nivel = 'avanzado';
-SELECT nombre, anio FROM cursos WHERE area = 'BI';
+Contact: miguel@ejemplo.com`,
+    "courses.sql": `-- Try these queries inside mysql:
+SELECT * FROM courses;
+SELECT * FROM skills WHERE level = 'advanced';
+SELECT name, year FROM courses WHERE area = 'BI';
 SHOW TABLES;
-DESCRIBE habilidades;`,
+DESCRIBE skills;`,
 };
 
 const CHIPS = {
   bash: [
     "help",
     "ls",
-    "ls habilidades/",
-    "cat sobre_mi.txt",
-    "cat cursos.sql",
+    "ls skills/",
+    "cat about_me.txt",
+    "cat courses.sql",
     "whoami",
     "mysql -u miguel -p",
     "clear",
   ],
   mysql: [
     "SHOW TABLES;",
-    "SELECT * FROM cursos;",
-    "SELECT * FROM habilidades WHERE nivel = 'avanzado';",
-    "SELECT nombre, anio FROM cursos WHERE area = 'BI';",
-    "DESCRIBE habilidades;",
-    "SELECT * FROM cursos ORDER BY nombre LIMIT 3;",
+    "SELECT * FROM courses;",
+    "SELECT * FROM skills WHERE level = 'advanced';",
+    "SELECT name, year FROM courses WHERE area = 'BI';",
+    "DESCRIBE skills;",
+    "SELECT * FROM courses ORDER BY name LIMIT 3;",
     "exit",
   ],
 };
@@ -93,20 +93,15 @@ export class Terminal {
       { html: '<span class="c-ok">SSH connection established.</span>' },
       { html: `Last login: ${SERVER.lastLogin} from ${SERVER.fromIp}` },
       { html: "&nbsp;" },
-      { html: "Bienvenido/a a mi portafolio interactivo." },
-      { html: 'Mis habilidades no están en una lista: están en una <span class="c-str">base de datos</span>.' },
+      { html: "Welcome to my interactive portfolio." },
+      { html: 'My skills aren\'t in a list: they\'re in a <span class="c-str">database</span>.' },
       { html: "&nbsp;" },
-      { html: 'Escribe <span class="c-ok">help</span> para ver los comandos, o <span class="c-ok">mysql</span> para consultarlas directamente.' },
+      { html: 'Type <span class="c-ok">help</span> to see commands, or <span class="c-ok">mysql</span> to query them directly.' },
       { html: "&nbsp;" },
     ];
     for (const line of lines) {
-      await this.sleep(this.rapida(line) ? 0 : 90);
       this.linea(line.html);
     }
-  }
-
-  rapida(line) {
-    return line.rapida || false;
   }
 
   sleep(ms) {
@@ -146,7 +141,7 @@ export class Terminal {
     input.type = "text";
     input.autocomplete = "off";
     input.spellcheck = false;
-    input.setAttribute("aria-label", "Entrada de terminal");
+    input.setAttribute("aria-label", "Terminal input");
 
     const espejo = document.createElement("span");
     espejo.className = "espejo";
@@ -241,51 +236,51 @@ export class Terminal {
 
     switch (base) {
       case "help":
-        this.linea('<span class="c-tenue">Comandos disponibles:</span>');
-        this.linea('  <span class="c-ok">ls</span>              lista archivos del portafolio');
-        this.linea('  <span class="c-ok">cat</span> &lt;archivo&gt;   muestra el contenido de un archivo');
-        this.linea('  <span class="c-ok">whoami</span>          muestra información del usuario actual');
-        this.linea('  <span class="c-ok">mysql</span>           conecta a la base de datos de habilidades');
-        this.linea('  <span class="c-ok">clear</span>           limpia la pantalla');
+        this.linea('<span class="c-tenue">Available commands:</span>');
+        this.linea('  <span class="c-ok">ls</span>              list portfolio files');
+        this.linea('  <span class="c-ok">cat</span> &lt;file&gt;      show file contents');
+        this.linea('  <span class="c-ok">whoami</span>          show current user info');
+        this.linea('  <span class="c-ok">mysql</span>           connect to the skills database');
+        this.linea('  <span class="c-ok">clear</span>           clear the screen');
         break;
 
       case "ls": {
-        const objetivo = (args[0] || "").replace(/\/$/, "");
-        if (objetivo === "habilidades") {
+        const target = (args[0] || "").replace(/\/$/, "");
+        if (target === "skills") {
           this.linea(
             '<span class="c-cian" style="color:var(--cian)">python.txt  csharp.txt  dotnet.txt  sql.txt  powerbi.txt  excel.txt  docker.txt  git.txt</span>'
           );
           this.linea(
-            '<span class="c-tenue">tip: el detalle completo vive en la base de datos → escribe</span> <span class="c-ok">mysql</span>'
+            '<span class="c-tenue">tip: full details are in the database → type</span> <span class="c-ok">mysql</span>'
           );
         } else {
           this.linea(
-            '<span style="color:var(--cian)">habilidades/</span>  sobre_mi.txt  cursos.sql'
+            '<span style="color:var(--cian)">skills/</span>  about_me.txt  courses.sql'
           );
         }
         break;
       }
 
       case "cat": {
-        const archivo = args[0];
-        if (!archivo) {
-          this.linea('<span class="c-err">cat: falta el nombre del archivo</span>');
-        } else if (archivo === "habilidades/") {
-          this.linea('<span class="c-err">cat: habilidades/: es un directorio</span>');
-        } else if (ARCHIVOS[archivo]) {
-          ARCHIVOS[archivo].split("\n").forEach((l) =>
+        const file = args[0];
+        if (!file) {
+          this.linea('<span class="c-err">cat: missing file name</span>');
+        } else if (file === "skills/") {
+          this.linea('<span class="c-err">cat: skills/: is a directory</span>');
+        } else if (ARCHIVOS[file]) {
+          ARCHIVOS[file].split("\n").forEach((l) =>
             this.linea(this.esc(l) || "&nbsp;")
           );
         } else if (
-          /^(python|csharp|dotnet|sql|powerbi|excel|docker|git)\.txt$/.test(archivo) ||
-          archivo.startsWith("habilidades/")
+          /^(python|csharp|dotnet|sql|powerbi|excel|docker|git)\.txt$/.test(file) ||
+          file.startsWith("skills/")
         ) {
           this.linea(
-            '<span class="c-tenue">Ese detalle está en la base de datos. Escribe</span> <span class="c-ok">mysql</span> <span class="c-tenue">y consulta la tabla</span> <span class="c-str">habilidades</span><span class="c-tenue">.</span>'
+            '<span class="c-tenue">That detail is in the database. Type</span> <span class="c-ok">mysql</span> <span class="c-tenue">and query the</span> <span class="c-str">skills</span><span class="c-tenue"> table.</span>'
           );
         } else {
           this.linea(
-            `<span class="c-err">cat: ${this.esc(archivo)}: No existe el archivo o directorio</span>`
+            `<span class="c-err">cat: ${this.esc(file)}: No such file or directory</span>`
           );
         }
         break;
@@ -296,9 +291,9 @@ export class Terminal {
         this.linea("uid=1000(miguel) gid=1000(miguel) groups=1000(miguel),4(adm),27(sudo)");
         this.linea("&nbsp;");
         this.linea('<span class="c-ok">Rol: Backend Developer &amp; Data Enthusiast</span>');
-        this.linea(`Servidor: ${SERVER.host} (${SERVER.ip})`);
-        this.linea("Especializado en .NET, bases de datos, Power BI y análisis con Python.");
-        this.linea('<span class="c-tenue">(más info: </span><span class="c-ok">cat sobre_mi.txt</span><span class="c-tenue">)</span>');
+        this.linea(`Server: ${SERVER.host} (${SERVER.ip})`);
+        this.linea("Specialized in .NET, databases, Power BI and Python analytics.");
+        this.linea('<span class="c-tenue">(more info: </span><span class="c-ok">cat about_me.txt</span><span class="c-tenue">)</span>');
         break;
 
       case "mysql":
@@ -322,13 +317,13 @@ export class Terminal {
 
       case "exit":
         this.linea(
-          '<span class="c-tenue">Ya estás en bash. Prueba</span> <span class="c-ok">mysql</span> <span class="c-tenue">para entrar a la base de datos.</span>'
+          '<span class="c-tenue">You\'re in bash. Type</span> <span class="c-ok">mysql</span> <span class="c-tenue">to enter the database.</span>'
         );
         break;
 
       default:
         this.linea(
-          `<span class="c-err">${this.esc(base)}: comando no encontrado.</span> <span class="c-tenue">Escribe</span> <span class="c-ok">help</span>`
+          `<span class="c-err">${this.esc(base)}: command not found.</span> <span class="c-tenue">Type</span> <span class="c-ok">help</span>`
         );
     }
   }
@@ -362,12 +357,15 @@ export class Terminal {
   escribirComoHumano(cmd) {
     const input = this.entradaActual?.querySelector("input");
     if (!input) return;
+    const espejo = input.parentElement.querySelector(".espejo");
     input.focus({ preventScroll: true });
     input.value = "";
+    espejo.textContent = "";
     let idx = 0;
     const tic = () => {
       if (idx < cmd.length) {
         input.value += cmd[idx];
+        espejo.textContent = input.value;
         idx++;
         const delay = 45 + Math.random() * 70;
         setTimeout(tic, delay);
